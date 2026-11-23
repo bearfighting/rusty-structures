@@ -1,0 +1,11 @@
+[package]
+name = "data-structures"
+version = "0.1.0"
+edition = "2024"
+description = "Readable, idiomatic implementations of classic data structures in Rust"
+
+[lib]
+name = "data_structures"
+path = "src/lib.rs"
+
+[dependencies]
