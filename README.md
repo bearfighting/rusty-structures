@@ -10,7 +10,7 @@
 - 链表：`SinglyLinkedList`、`DoublyLinkedList`
 - 哈希结构：`HashMap`、`HashSet`
 - 优先结构：`BinaryHeap`、`PriorityQueue`
-- 搜索树：迭代版 `BinarySearchTree` 和递归版 `RecursiveBinarySearchTree`
+- 树：`AvlTree`、迭代版 `BinarySearchTree`、递归版 `RecursiveBinarySearchTree`、`Trie`
 
 结构的操作语义、复杂度和示例见各自的 Rustdoc；推进计划见 [ROADMAP.md](ROADMAP.md)，设计约定见 [PROJECT_PLAN.md](PROJECT_PLAN.md)。
 

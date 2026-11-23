@@ -1,6 +1,6 @@
 use data_structures::{
     AvlTree, BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap, HashSet,
-    PriorityQueue, Queue, RecursiveBinarySearchTree, SinglyLinkedList, Stack, Vector,
+    PriorityQueue, Queue, RecursiveBinarySearchTree, SinglyLinkedList, Stack, Trie, Vector,
 };
 use std::hash::{BuildHasher, Hasher};
 
@@ -303,4 +303,26 @@ fn avl_tree_rejects_duplicates_and_stays_sorted_after_removal() {
         [-1, 0, 1, 2, 5, 6, 9, 11]
     );
     assert!(tree.height() <= 4);
+}
+
+#[test]
+fn trie_handles_empty_unicode_prefixes_and_prunes_removed_words() {
+    let mut trie = Trie::new();
+    assert!(!trie.starts_with(""));
+    assert!(trie.insert(""));
+    assert!(trie.insert("car"));
+    assert!(trie.insert("cart"));
+    assert!(trie.insert("猫咪"));
+    assert!(!trie.insert("car"));
+
+    assert!(trie.contains(""));
+    assert!(!trie.contains("ca"));
+    assert!(trie.starts_with("ca"));
+    assert!(trie.starts_with("猫"));
+    assert!(trie.remove("car"));
+    assert!(trie.starts_with("car")); // `cart` still uses the path
+    assert!(trie.remove("cart"));
+    assert!(!trie.starts_with("car")); // the unused path was pruned
+    assert_eq!(trie.iter().collect::<Vec<_>>(), ["", "猫咪"]);
+    assert_eq!(trie.len(), 2);
 }
