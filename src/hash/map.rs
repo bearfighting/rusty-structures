@@ -8,7 +8,7 @@
 
 use crate::Vector;
 use std::borrow::Borrow;
-use std::hash::{BuildHasher, Hash, Hasher, RandomState};
+use std::hash::{BuildHasher, Hash, RandomState};
 use std::mem;
 
 mod iter;
@@ -151,14 +151,12 @@ where
     }
 
     fn max_entries_for_buckets(bucket_count: usize) -> usize {
-        let remainder = usize::from(bucket_count % 4 != 0);
+        let remainder = usize::from(!bucket_count.is_multiple_of(4));
         bucket_count - bucket_count / 4 - remainder
     }
 
     fn hash<Q: Hash + ?Sized>(&self, key: &Q) -> u64 {
-        let mut hasher = self.hash_builder.build_hasher();
-        key.hash(&mut hasher);
-        hasher.finish()
+        self.hash_builder.hash_one(key)
     }
 
     fn bucket_index<Q: Hash + ?Sized>(&self, key: &Q) -> usize {

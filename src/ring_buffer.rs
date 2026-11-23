@@ -48,10 +48,10 @@ impl<T> RingBuffer<T> {
     }
 
     pub(crate) fn try_push_back(&mut self, value: T) -> Result<(), (T, TryReserveError)> {
-        if self.len == self.capacity() {
-            if let Err(error) = self.grow() {
-                return Err((value, error));
-            }
+        if self.len == self.capacity()
+            && let Err(error) = self.grow()
+        {
+            return Err((value, error));
         }
 
         let index = self.index_at_offset(self.len);
@@ -61,10 +61,10 @@ impl<T> RingBuffer<T> {
     }
 
     pub(crate) fn try_push_front(&mut self, value: T) -> Result<(), (T, TryReserveError)> {
-        if self.len == self.capacity() {
-            if let Err(error) = self.grow() {
-                return Err((value, error));
-            }
+        if self.len == self.capacity()
+            && let Err(error) = self.grow()
+        {
+            return Err((value, error));
         }
 
         if self.head == 0 {
@@ -162,9 +162,7 @@ impl<T> RingBuffer<T> {
     }
 
     fn advance_head(&mut self) {
-        if self.is_empty() {
-            self.head = 0;
-        } else if self.head + 1 == self.capacity() {
+        if self.is_empty() || self.head + 1 == self.capacity() {
             self.head = 0;
         } else {
             self.head += 1;

@@ -74,11 +74,11 @@ impl<K, V> Iterator for IntoIter<K, V> {
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {
-            if let Some(bucket) = self.current_bucket.as_mut() {
-                if let Some(entry) = bucket.next() {
-                    self.remaining -= 1;
-                    return Some(entry);
-                }
+            if let Some(bucket) = self.current_bucket.as_mut()
+                && let Some(entry) = bucket.next()
+            {
+                self.remaining -= 1;
+                return Some(entry);
             }
 
             self.current_bucket = Some(self.buckets.next()?.into_iter());
