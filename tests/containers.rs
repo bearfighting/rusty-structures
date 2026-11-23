@@ -1,6 +1,6 @@
 use data_structures::{
-    BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap, HashSet, PriorityQueue, Queue,
-    RecursiveBinarySearchTree, SinglyLinkedList, Stack, Vector,
+    AvlTree, BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap, HashSet,
+    PriorityQueue, Queue, RecursiveBinarySearchTree, SinglyLinkedList, Stack, Vector,
 };
 use std::hash::{BuildHasher, Hasher};
 
@@ -289,4 +289,18 @@ fn recursive_and_iterative_search_trees_agree() {
             recursive.iter().copied().collect::<Vec<_>>()
         );
     }
+}
+
+#[test]
+fn avl_tree_rejects_duplicates_and_stays_sorted_after_removal() {
+    let mut tree: AvlTree<_> = [9, 5, 10, 0, 6, 11, -1, 1, 2].into_iter().collect();
+    assert!(!tree.insert(6));
+    assert_eq!(tree.get(&10), Some(&10));
+    assert_eq!(tree.remove(&10), Some(10));
+    assert_eq!(tree.remove(&42), None);
+    assert_eq!(
+        tree.iter().copied().collect::<Vec<_>>(),
+        [-1, 0, 1, 2, 5, 6, 9, 11]
+    );
+    assert!(tree.height() <= 4);
 }
