@@ -10,7 +10,8 @@
 - 链表：`SinglyLinkedList`、`DoublyLinkedList`
 - 哈希结构：`HashMap`、`HashSet`
 - 优先结构：`BinaryHeap`、`PriorityQueue`
-- 树：`AvlTree`、`RedBlackTree`、迭代版 `BinarySearchTree`、递归版 `RecursiveBinarySearchTree`、`Trie`
+- 树与前缀结构：`BinarySearchTree`（迭代版）、`RecursiveBinarySearchTree`、`AvlTree`、`RedBlackTree`、`BTreeMap`、`BTreeSet`、`Trie`
+- 有序映射：`TreeMap` trait，以及由二叉搜索树、AVL 树、红黑树和 B 树支撑的映射实现。它们共享映射行为接口，便于比较不同树的算法和不变量；B 树映射也是独立可用的具体类型。
 
 结构的操作语义、复杂度和示例见各自的 Rustdoc；推进计划见 [ROADMAP.md](ROADMAP.md)，设计约定见 [PROJECT_PLAN.md](PROJECT_PLAN.md)。
 

@@ -34,7 +34,7 @@ impl<T> BTreeSet<T> {
     }
 
     /// Returns values in ascending order.
-    pub fn iter(&self) -> impl Iterator<Item = &T> + ExactSizeIterator + FusedIterator {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &T> + FusedIterator {
         self.map.keys()
     }
 }

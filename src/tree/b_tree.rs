@@ -15,6 +15,8 @@ const MAX_KEYS: usize = 2 * MIN_DEGREE - 1;
 #[derive(Clone, Debug)]
 struct Node<K, V> {
     entries: Vec<(K, V)>,
+    // Keep child nodes individually owned to make split/merge ownership moves explicit.
+    #[allow(clippy::vec_box)]
     children: Vec<Box<Node<K, V>>>,
 }
 
@@ -105,7 +107,7 @@ impl<K, V> BTreeMap<K, V> {
     }
 
     /// Returns an iterator over values in key order.
-    pub fn values(&self) -> impl Iterator<Item = &V> + ExactSizeIterator + FusedIterator {
+    pub fn values(&self) -> impl ExactSizeIterator<Item = &V> + FusedIterator {
         self.iter().map(|(_, value)| value)
     }
 }

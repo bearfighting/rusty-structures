@@ -46,7 +46,9 @@ pub use list::{DoublyLinkedList, SinglyLinkedList};
 pub use queue::{Queue, TryEnqueueError};
 pub use stack::Stack;
 pub use tree::{
-    AvlTree, BTreeMap, BTreeSet, BinarySearchTree, RecursiveBinarySearchTree, RedBlackTree, Trie,
+    AvlTree, AvlTreeMap, BTreeMap, BTreeSet, BinarySearchTree, BinarySearchTreeMap,
+    RecursiveBinarySearchTree, RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap,
+    TreeMap, Trie,
 };
 pub use vector::{TryPushError, TryReserveError, Vector};
 

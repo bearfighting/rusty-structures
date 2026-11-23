@@ -1,7 +1,8 @@
 use data_structures::{
-    AvlTree, BTreeMap, BTreeSet, BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap,
-    HashSet, PriorityQueue, Queue, RecursiveBinarySearchTree, RedBlackTree, SinglyLinkedList,
-    Stack, Trie, Vector,
+    AvlTree, AvlTreeMap, BTreeMap, BTreeSet, BinaryHeap, BinarySearchTree, BinarySearchTreeMap,
+    Deque, DoublyLinkedList, HashMap, HashSet, PriorityQueue, Queue, RecursiveBinarySearchTree,
+    RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap, SinglyLinkedList, Stack, TreeMap,
+    Trie, Vector,
 };
 use std::hash::{BuildHasher, Hasher};
 
@@ -370,4 +371,33 @@ fn b_tree_set_keeps_unique_values_in_order() {
     assert!(set.remove(&4));
     assert!(!set.remove(&4));
     assert_eq!(set.iter().copied().collect::<Vec<_>>(), [1]);
+}
+
+fn verify_tree_map<M: TreeMap<i32, String>>(mut map: M) {
+    assert!(map.is_empty());
+    assert_eq!(map.insert(3, "three".into()), None);
+    assert_eq!(map.insert(1, "one".into()), None);
+    assert_eq!(map.insert(2, "two".into()), None);
+    assert_eq!(map.insert(2, "TWO".into()), Some("two".into()));
+    *map.get_mut(&3).unwrap() = "THREE".into();
+    assert!(map.contains_key(&1));
+    assert_eq!(map.get(&2).map(String::as_str), Some("TWO"));
+    assert_eq!(
+        map.iter()
+            .map(|(k, v)| (*k, v.as_str()))
+            .collect::<Vec<_>>(),
+        [(1, "one"), (2, "TWO"), (3, "THREE")]
+    );
+    assert_eq!(map.remove(&2).as_deref(), Some("TWO"));
+    assert_eq!(map.remove(&2), None);
+    assert_eq!(map.len(), 2);
+}
+
+#[test]
+fn tree_map_backends_share_ordered_map_behavior() {
+    verify_tree_map(BinarySearchTreeMap::new());
+    verify_tree_map(RecursiveBinarySearchTreeMap::new());
+    verify_tree_map(AvlTreeMap::new());
+    verify_tree_map(RedBlackTreeMap::new());
+    verify_tree_map(BTreeMap::new());
 }

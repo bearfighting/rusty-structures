@@ -75,6 +75,58 @@ impl<T> RedBlackTree<T> {
 }
 
 impl<T: Ord> RedBlackTree<T> {
+    pub(crate) fn get_by<Q: ?Sized>(
+        &self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&T> {
+        let mut node = self.root.as_deref();
+        while let Some(current) = node {
+            match cmp(query, &current.value) {
+                std::cmp::Ordering::Less => node = current.left.as_deref(),
+                std::cmp::Ordering::Greater => node = current.right.as_deref(),
+                std::cmp::Ordering::Equal => return Some(&current.value),
+            }
+        }
+        None
+    }
+
+    pub(crate) fn get_mut_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&mut T> {
+        let mut node = self.root.as_deref_mut();
+        while let Some(current) = node {
+            match cmp(query, &current.value) {
+                std::cmp::Ordering::Less => node = current.left.as_deref_mut(),
+                std::cmp::Ordering::Greater => node = current.right.as_deref_mut(),
+                std::cmp::Ordering::Equal => return Some(&mut current.value),
+            }
+        }
+        None
+    }
+
+    pub(crate) fn remove_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<T> {
+        let mut root = self.root.take()?;
+        if !is_red(&root.left) && !is_red(&root.right) {
+            root.color = Color::Red;
+        }
+        let (root, removed) = remove_at_by(root, query, &cmp);
+        self.root = root;
+        if let Some(root) = self.root.as_mut() {
+            root.color = Color::Black;
+        }
+        if removed.is_some() {
+            self.len -= 1;
+        }
+        removed
+    }
+
     /// Inserts `value`; returns `false` if an equal value is already present.
     pub fn insert(&mut self, value: T) -> bool {
         let (root, inserted) = insert_at(self.root.take(), value);
@@ -192,6 +244,49 @@ fn remove_at<T: Ord>(mut node: Box<Node<T>>, value: &T) -> (Option<Box<Node<T>>>
             } else {
                 let right = node.right.take().expect("right branch exists");
                 let (right, value) = remove_at(right, value);
+                node.right = right;
+                removed = value;
+            }
+        }
+    }
+    (Some(fix_up(node)), removed)
+}
+
+fn remove_at_by<T, Q: ?Sized>(
+    mut node: Box<Node<T>>,
+    query: &Q,
+    cmp: &impl Fn(&Q, &T) -> std::cmp::Ordering,
+) -> (Option<Box<Node<T>>>, Option<T>) {
+    let mut removed = None;
+    if cmp(query, &node.value) == std::cmp::Ordering::Less {
+        if node.left.is_some() {
+            if !is_red(&node.left) && !left_is_red(&node.left) {
+                node = move_red_left(node);
+            }
+            let left = node.left.take().expect("left branch exists");
+            let (left, value) = remove_at_by(left, query, cmp);
+            node.left = left;
+            removed = value;
+        }
+    } else {
+        if is_red(&node.left) {
+            node = rotate_right(node);
+        }
+        if cmp(query, &node.value) == std::cmp::Ordering::Equal && node.right.is_none() {
+            return (None, Some(node.value));
+        }
+        if node.right.is_some() {
+            if !is_red(&node.right) && !left_is_red(&node.right) {
+                node = move_red_right(node);
+            }
+            if cmp(query, &node.value) == std::cmp::Ordering::Equal {
+                let right = node.right.take().expect("right branch exists");
+                let (right, successor) = take_min(right);
+                node.right = right;
+                removed = Some(std::mem::replace(&mut node.value, successor));
+            } else {
+                let right = node.right.take().expect("right branch exists");
+                let (right, value) = remove_at_by(right, query, cmp);
                 node.right = right;
                 removed = value;
             }

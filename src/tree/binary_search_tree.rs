@@ -7,7 +7,7 @@ pub use iter::{IntoIter, Iter};
 pub use recursive::RecursiveBinarySearchTree;
 
 #[derive(Clone, Debug)]
-struct Node<T> {
+pub(super) struct Node<T> {
     value: T,
     left: Option<Box<Node<T>>>,
     right: Option<Box<Node<T>>>,
@@ -84,6 +84,74 @@ fn drop_nodes<T>(mut root: Option<Box<Node<T>>>) {
 }
 
 impl<T: Ord> BinarySearchTree<T> {
+    pub(crate) fn get_by<Q: ?Sized>(
+        &self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&T> {
+        let mut node = self.root.as_deref();
+        while let Some(current) = node {
+            match cmp(query, &current.value) {
+                std::cmp::Ordering::Less => node = current.left.as_deref(),
+                std::cmp::Ordering::Greater => node = current.right.as_deref(),
+                std::cmp::Ordering::Equal => return Some(&current.value),
+            }
+        }
+        None
+    }
+
+    pub(crate) fn get_mut_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&mut T> {
+        let mut node = self.root.as_deref_mut();
+        while let Some(current) = node {
+            match cmp(query, &current.value) {
+                std::cmp::Ordering::Less => node = current.left.as_deref_mut(),
+                std::cmp::Ordering::Greater => node = current.right.as_deref_mut(),
+                std::cmp::Ordering::Equal => return Some(&mut current.value),
+            }
+        }
+        None
+    }
+
+    pub(crate) fn remove_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<T> {
+        let mut link = &mut self.root;
+        loop {
+            let ordering = match link.as_ref() {
+                Some(node) => cmp(query, &node.value),
+                None => return None,
+            };
+            match ordering {
+                std::cmp::Ordering::Less => link = &mut link.as_mut().expect("node exists").left,
+                std::cmp::Ordering::Greater => {
+                    link = &mut link.as_mut().expect("node exists").right
+                }
+                std::cmp::Ordering::Equal => {
+                    let mut removed = link.take().expect("matched node exists");
+                    *link = match (removed.left.take(), removed.right.take()) {
+                        (None, right) => right,
+                        (left, None) => left,
+                        (Some(left), Some(right)) => {
+                            let mut right = Some(right);
+                            let mut successor = take_min_iterative(&mut right);
+                            successor.left = Some(left);
+                            successor.right = right;
+                            Some(successor)
+                        }
+                    };
+                    self.len -= 1;
+                    return Some(removed.value);
+                }
+            }
+        }
+    }
+
     /// Inserts `value`; returns `false` if an equal value is already present.
     pub fn insert(&mut self, value: T) -> bool {
         let mut link = &mut self.root;
@@ -209,7 +277,7 @@ fn remove_node<T: Ord>(root: Option<Box<Node<T>>>, value: &T) -> (Option<Box<Nod
     }
 }
 
-fn extract_min<T>(mut node: Box<Node<T>>) -> (Option<Box<Node<T>>>, T) {
+pub(super) fn extract_min<T>(mut node: Box<Node<T>>) -> (Option<Box<Node<T>>>, T) {
     match node.left.take() {
         None => (node.right.take(), node.value),
         Some(left) => {

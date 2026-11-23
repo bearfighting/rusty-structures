@@ -75,6 +75,98 @@ impl<T> AvlTree<T> {
 }
 
 impl<T: Ord> AvlTree<T> {
+    pub(crate) fn get_by<Q: ?Sized>(
+        &self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&T> {
+        let mut node = self.root.as_deref();
+        while let Some(current) = node {
+            match cmp(query, &current.value) {
+                std::cmp::Ordering::Less => node = current.left.as_deref(),
+                std::cmp::Ordering::Greater => node = current.right.as_deref(),
+                std::cmp::Ordering::Equal => return Some(&current.value),
+            }
+        }
+        None
+    }
+
+    pub(crate) fn get_mut_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&mut T> {
+        let mut node = self.root.as_deref_mut();
+        while let Some(current) = node {
+            match cmp(query, &current.value) {
+                std::cmp::Ordering::Less => node = current.left.as_deref_mut(),
+                std::cmp::Ordering::Greater => node = current.right.as_deref_mut(),
+                std::cmp::Ordering::Equal => return Some(&mut current.value),
+            }
+        }
+        None
+    }
+
+    pub(crate) fn remove_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<T> {
+        fn remove<T, Q: ?Sized>(
+            root: Option<Box<Node<T>>>,
+            q: &Q,
+            cmp: &impl Fn(&Q, &T) -> std::cmp::Ordering,
+        ) -> (Option<Box<Node<T>>>, Option<T>) {
+            let Some(mut node) = root else {
+                return (None, None);
+            };
+            let out = match cmp(q, &node.value) {
+                std::cmp::Ordering::Less => {
+                    let (left, out) = remove(node.left.take(), q, cmp);
+                    node.left = left;
+                    out
+                }
+                std::cmp::Ordering::Greater => {
+                    let (right, out) = remove(node.right.take(), q, cmp);
+                    node.right = right;
+                    out
+                }
+                std::cmp::Ordering::Equal => {
+                    let Node {
+                        value, left, right, ..
+                    } = *node;
+                    return match (left, right) {
+                        (None, right) => (right, Some(value)),
+                        (left, None) => (left, Some(value)),
+                        (Some(left), Some(right)) => {
+                            let (right, successor) = take_min(right);
+                            (
+                                Some(rebalance(Box::new(Node {
+                                    value: successor,
+                                    height: 1,
+                                    left: Some(left),
+                                    right,
+                                }))),
+                                Some(value),
+                            )
+                        }
+                    };
+                }
+            };
+            if out.is_some() {
+                (Some(rebalance(node)), out)
+            } else {
+                (Some(node), None)
+            }
+        }
+        let (root, out) = remove(self.root.take(), query, &cmp);
+        self.root = root;
+        if out.is_some() {
+            self.len -= 1;
+        }
+        out
+    }
+
     /// Inserts `value`; returns `false` if an equal value is already present.
     pub fn insert(&mut self, value: T) -> bool {
         let (root, inserted) = insert_at(self.root.take(), value);

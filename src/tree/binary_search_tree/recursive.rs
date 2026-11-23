@@ -1,6 +1,6 @@
 //! Recursive binary search tree operations for teaching and comparison.
 
-use super::{IntoIter, Iter, Node, drop_nodes, remove_node};
+use super::{IntoIter, Iter, Node, drop_nodes, extract_min, remove_node};
 
 /// A recursive implementation of a set-like binary search tree.
 ///
@@ -60,6 +60,98 @@ impl<T> RecursiveBinarySearchTree<T> {
 }
 
 impl<T: Ord> RecursiveBinarySearchTree<T> {
+    pub(crate) fn get_by<Q: ?Sized>(
+        &self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&T> {
+        fn find<'a, T, Q: ?Sized>(
+            node: Option<&'a Node<T>>,
+            q: &Q,
+            cmp: &impl Fn(&Q, &T) -> std::cmp::Ordering,
+        ) -> Option<&'a T> {
+            let node = node?;
+            match cmp(q, &node.value) {
+                std::cmp::Ordering::Less => find(node.left.as_deref(), q, cmp),
+                std::cmp::Ordering::Greater => find(node.right.as_deref(), q, cmp),
+                std::cmp::Ordering::Equal => Some(&node.value),
+            }
+        }
+        find(self.root.as_deref(), query, &cmp)
+    }
+
+    pub(crate) fn get_mut_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<&mut T> {
+        fn find<'a, T, Q: ?Sized>(
+            node: Option<&'a mut Box<Node<T>>>,
+            q: &Q,
+            cmp: &impl Fn(&Q, &T) -> std::cmp::Ordering,
+        ) -> Option<&'a mut T> {
+            let node = node?;
+            match cmp(q, &node.value) {
+                std::cmp::Ordering::Less => find(node.left.as_mut(), q, cmp),
+                std::cmp::Ordering::Greater => find(node.right.as_mut(), q, cmp),
+                std::cmp::Ordering::Equal => Some(&mut node.value),
+            }
+        }
+        find(self.root.as_mut(), query, &cmp)
+    }
+
+    pub(crate) fn remove_by<Q: ?Sized>(
+        &mut self,
+        query: &Q,
+        cmp: impl Fn(&Q, &T) -> std::cmp::Ordering,
+    ) -> Option<T> {
+        fn remove<T, Q: ?Sized>(
+            root: Option<Box<Node<T>>>,
+            q: &Q,
+            cmp: &impl Fn(&Q, &T) -> std::cmp::Ordering,
+        ) -> (Option<Box<Node<T>>>, Option<T>) {
+            let Some(mut node) = root else {
+                return (None, None);
+            };
+            match cmp(q, &node.value) {
+                std::cmp::Ordering::Less => {
+                    let (left, out) = remove(node.left.take(), q, cmp);
+                    node.left = left;
+                    (Some(node), out)
+                }
+                std::cmp::Ordering::Greater => {
+                    let (right, out) = remove(node.right.take(), q, cmp);
+                    node.right = right;
+                    (Some(node), out)
+                }
+                std::cmp::Ordering::Equal => {
+                    let Node { value, left, right } = *node;
+                    match (left, right) {
+                        (None, right) => (right, Some(value)),
+                        (left, None) => (left, Some(value)),
+                        (Some(left), Some(right)) => {
+                            let (right, successor) = extract_min(right);
+                            (
+                                Some(Box::new(Node {
+                                    value: successor,
+                                    left: Some(left),
+                                    right,
+                                })),
+                                Some(value),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        let (root, out) = remove(self.root.take(), query, &cmp);
+        self.root = root;
+        if out.is_some() {
+            self.len -= 1;
+        }
+        out
+    }
+
     /// Inserts `value`; returns `false` if an equal value is already present.
     pub fn insert(&mut self, value: T) -> bool {
         if insert_node(&mut self.root, value) {
