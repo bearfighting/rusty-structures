@@ -1,4 +1,8 @@
-//! Readable, idiomatic implementations of classic data structures.
+//! Readable, rigorous implementations of classic data structures for learning Rust.
+//!
+//! This crate is a teaching collection, not a replacement for Rust's standard
+//! library. It favors implementations that make ownership, invariants, and
+//! operation costs clear, while still validating important edge cases.
 //!
 //! This crate is organized by data-structure domain. Public modules expose
 //! stable, intentional APIs; implementation details such as node types and
@@ -14,10 +18,9 @@
 //! - Document invariants, operation complexity, iteration order, and relevant
 //!   limitations for each public data structure.
 //!
-//! The crate starts as a single library. The [`mod@vector`] module is the first
-//! implementation; further modules will be added as roadmap stages are
-//! completed. Algorithms may be separated from data structure implementations
-//! when a real API or dependency boundary emerges.
+//! The crate is a single library organized by data-structure domain. Algorithms
+//! may be separated from data structure implementations when a real API or
+//! dependency boundary emerges.
 //!
 //! # Roadmap
 //!
@@ -26,9 +29,11 @@
 
 pub mod deque;
 pub mod hash;
+pub mod heap;
 pub mod list;
 pub mod queue;
 pub mod stack;
+pub mod tree;
 pub mod vector;
 
 mod errors;
@@ -36,9 +41,11 @@ mod ring_buffer;
 
 pub use deque::{Deque, TryDequePushError};
 pub use hash::{HashMap, HashSet};
+pub use heap::{BinaryHeap, PriorityQueue};
 pub use list::{DoublyLinkedList, SinglyLinkedList};
 pub use queue::{Queue, TryEnqueueError};
 pub use stack::Stack;
+pub use tree::{BinarySearchTree, RecursiveBinarySearchTree};
 pub use vector::{TryPushError, TryReserveError, Vector};
 
 /// Creates a [`Vector`] containing the given elements or repeated value.
