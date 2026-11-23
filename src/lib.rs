@@ -45,7 +45,9 @@ pub use heap::{BinaryHeap, PriorityQueue};
 pub use list::{DoublyLinkedList, SinglyLinkedList};
 pub use queue::{Queue, TryEnqueueError};
 pub use stack::Stack;
-pub use tree::{AvlTree, BinarySearchTree, RecursiveBinarySearchTree, RedBlackTree, Trie};
+pub use tree::{
+    AvlTree, BTreeMap, BTreeSet, BinarySearchTree, RecursiveBinarySearchTree, RedBlackTree, Trie,
+};
 pub use vector::{TryPushError, TryReserveError, Vector};
 
 /// Creates a [`Vector`] containing the given elements or repeated value.

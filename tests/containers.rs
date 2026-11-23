@@ -1,7 +1,7 @@
 use data_structures::{
-    AvlTree, BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap, HashSet,
-    PriorityQueue, Queue, RecursiveBinarySearchTree, RedBlackTree, SinglyLinkedList, Stack, Trie,
-    Vector,
+    AvlTree, BTreeMap, BTreeSet, BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap,
+    HashSet, PriorityQueue, Queue, RecursiveBinarySearchTree, RedBlackTree, SinglyLinkedList,
+    Stack, Trie, Vector,
 };
 use std::hash::{BuildHasher, Hasher};
 
@@ -339,4 +339,35 @@ fn red_black_tree_provides_ordered_unique_set_operations() {
         tree.iter().copied().collect::<Vec<_>>(),
         [1, 4, 6, 7, 8, 10, 13, 14]
     );
+}
+
+#[test]
+fn b_tree_map_splits_updates_deletes_and_iterates_in_key_order() {
+    let mut map = BTreeMap::new();
+    for key in (0..40).rev() {
+        assert_eq!(map.insert(key, key * 10), None);
+    }
+    assert!((2..=5).contains(&map.height()));
+    assert_eq!(map.insert(12, 999), Some(120));
+    assert_eq!(map.get(&12), Some(&999));
+    *map.get_mut(&13).unwrap() = 777;
+    assert_eq!(map.remove(&14), Some(140));
+    assert_eq!(map.remove(&99), None);
+    assert_eq!(
+        map.iter().map(|(key, _)| *key).collect::<Vec<_>>(),
+        (0..40).filter(|key| *key != 14).collect::<Vec<_>>()
+    );
+    assert_eq!(map.get(&13), Some(&777));
+}
+
+#[test]
+fn b_tree_set_keeps_unique_values_in_order() {
+    let mut set = BTreeSet::new();
+    assert!(set.insert(4));
+    assert!(set.insert(1));
+    assert!(!set.insert(4));
+    assert!(set.contains(&1));
+    assert!(set.remove(&4));
+    assert!(!set.remove(&4));
+    assert_eq!(set.iter().copied().collect::<Vec<_>>(), [1]);
 }
