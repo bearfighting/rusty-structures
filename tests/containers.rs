@@ -1,6 +1,7 @@
 use data_structures::{
     AvlTree, BinaryHeap, BinarySearchTree, Deque, DoublyLinkedList, HashMap, HashSet,
-    PriorityQueue, Queue, RecursiveBinarySearchTree, SinglyLinkedList, Stack, Trie, Vector,
+    PriorityQueue, Queue, RecursiveBinarySearchTree, RedBlackTree, SinglyLinkedList, Stack, Trie,
+    Vector,
 };
 use std::hash::{BuildHasher, Hasher};
 
@@ -325,4 +326,17 @@ fn trie_handles_empty_unicode_prefixes_and_prunes_removed_words() {
     assert!(!trie.starts_with("car")); // the unused path was pruned
     assert_eq!(trie.iter().collect::<Vec<_>>(), ["", "猫咪"]);
     assert_eq!(trie.len(), 2);
+}
+
+#[test]
+fn red_black_tree_provides_ordered_unique_set_operations() {
+    let mut tree: RedBlackTree<_> = [8, 3, 10, 1, 6, 14, 4, 7, 13].into_iter().collect();
+    assert!(!tree.insert(6));
+    assert!(tree.contains(&13));
+    assert_eq!(tree.remove(&3), Some(3));
+    assert_eq!(tree.remove(&99), None);
+    assert_eq!(
+        tree.iter().copied().collect::<Vec<_>>(),
+        [1, 4, 6, 7, 8, 10, 13, 14]
+    );
 }
