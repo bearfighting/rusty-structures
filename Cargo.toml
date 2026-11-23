@@ -2,7 +2,7 @@
 name = "data-structures"
 version = "0.1.0"
 edition = "2024"
-description = "Readable, idiomatic implementations of classic data structures in Rust"
+description = "Readable, rigorous, learning-focused data structures in Rust"
 
 [lib]
 name = "data_structures"
