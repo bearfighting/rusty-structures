@@ -4,7 +4,7 @@ use super::Queue;
 use std::iter::FusedIterator;
 
 /// A shared iterator over queue values, from front to back.
-pub use crate::ring_buffer::RingIter as Iter;
+pub use crate::foundation::ring_buffer::RingIter as Iter;
 
 /// An owning iterator that removes values from the front of a queue.
 pub struct IntoIter<T> {

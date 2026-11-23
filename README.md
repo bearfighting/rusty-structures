@@ -10,10 +10,12 @@
 - 链表：`SinglyLinkedList`、`DoublyLinkedList`
 - 哈希结构：`HashMap`、`HashSet`
 - 优先结构：`BinaryHeap`、`PriorityQueue`
-- 树与前缀结构：`BinarySearchTree`（迭代版）、`RecursiveBinarySearchTree`、`AvlTree`、`RedBlackTree`、`BTreeMap`、`BTreeSet`、`Trie`
-- 有序映射：`TreeMap` trait，以及由二叉搜索树、AVL 树、红黑树和 B 树支撑的映射实现。它们共享映射行为接口，便于比较不同树的算法和不变量；B 树映射也是独立可用的具体类型。
+- 树与前缀结构：`BinarySearchTree`（迭代版）、`RecursiveBinarySearchTree`、`AvlTree`、`RedBlackTree`、`BTreeMap`、`BTreeSet`、`BPlusTreeMap`、`BPlusTreeSet`、`Trie`
+- 有序映射：`TreeMap` trait，以及由二叉搜索树、AVL 树、红黑树、B 树和 B+ 树支撑的映射实现。它们共享映射行为接口，便于比较不同树的算法和不变量。
 
-结构的操作语义、复杂度和示例见各自的 Rustdoc；推进计划见 [ROADMAP.md](ROADMAP.md)，设计约定见 [PROJECT_PLAN.md](PROJECT_PLAN.md)。
+结构的操作语义、复杂度和示例见各自的 Rustdoc；模块分层见 [ARCHITECTURE.md](ARCHITECTURE.md)，推进计划见 [ROADMAP.md](ROADMAP.md)，设计约定见 [PROJECT_PLAN.md](PROJECT_PLAN.md)。
+
+数据结构可视化教学工具的原型设计见 [VISUALIZER_DESIGN.md](VISUALIZER_DESIGN.md)，分阶段交付计划见 [VISUALIZER_ROADMAP.md](VISUALIZER_ROADMAP.md)。
 
 ## 验证
 

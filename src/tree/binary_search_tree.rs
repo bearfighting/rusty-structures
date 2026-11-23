@@ -2,9 +2,11 @@
 
 mod iter;
 mod recursive;
+mod visualization;
 
 pub use iter::{IntoIter, Iter};
 pub use recursive::RecursiveBinarySearchTree;
+pub use visualization::{BstEvent, BstTrace, BstTreeSnapshot, BstTreeSnapshotNode};
 
 #[derive(Clone, Debug)]
 pub(super) struct Node<T> {

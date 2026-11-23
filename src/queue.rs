@@ -16,7 +16,7 @@ mod errors;
 mod iter;
 mod traits;
 
-use crate::ring_buffer::RingBuffer;
+use crate::foundation::ring_buffer::RingBuffer;
 pub use errors::TryEnqueueError;
 pub use iter::{IntoIter, Iter};
 

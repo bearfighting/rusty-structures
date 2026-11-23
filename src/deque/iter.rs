@@ -1,11 +1,11 @@
 //! Iterators exposed by the deque API.
 
 use super::Deque;
-use crate::ring_buffer::RingBuffer;
+use crate::foundation::ring_buffer::RingBuffer;
 use std::iter::FusedIterator;
 
 /// A shared iterator over deque values, from front to back.
-pub use crate::ring_buffer::RingIter as Iter;
+pub use crate::foundation::ring_buffer::RingIter as Iter;
 
 /// An owning iterator that removes values from either end of the deque.
 pub struct IntoIter<T> {

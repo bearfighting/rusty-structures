@@ -9,3 +9,7 @@ name = "data_structures"
 path = "src/lib.rs"
 
 [dependencies]
+
+[workspace]
+members = ["visualizer-wasm"]
+resolver = "3"

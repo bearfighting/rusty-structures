@@ -7,7 +7,7 @@ mod errors;
 mod iter;
 mod traits;
 
-use crate::ring_buffer::RingBuffer;
+use crate::foundation::ring_buffer::RingBuffer;
 pub use errors::TryDequePushError;
 pub use iter::{IntoIter, Iter};
 

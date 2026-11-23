@@ -1,8 +1,8 @@
 use data_structures::{
-    AvlTree, AvlTreeMap, BTreeMap, BTreeSet, BinaryHeap, BinarySearchTree, BinarySearchTreeMap,
-    Deque, DoublyLinkedList, HashMap, HashSet, PriorityQueue, Queue, RecursiveBinarySearchTree,
-    RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap, SinglyLinkedList, Stack, TreeMap,
-    Trie, Vector,
+    AvlTree, AvlTreeMap, BPlusTreeMap, BPlusTreeSet, BTreeMap, BTreeSet, BinaryHeap,
+    BinarySearchTree, BinarySearchTreeMap, Deque, DoublyLinkedList, HashMap, HashSet,
+    PriorityQueue, Queue, RecursiveBinarySearchTree, RecursiveBinarySearchTreeMap, RedBlackTree,
+    RedBlackTreeMap, SinglyLinkedList, Stack, TreeMap, Trie, Vector,
 };
 use std::hash::{BuildHasher, Hasher};
 
@@ -400,4 +400,31 @@ fn tree_map_backends_share_ordered_map_behavior() {
     verify_tree_map(AvlTreeMap::new());
     verify_tree_map(RedBlackTreeMap::new());
     verify_tree_map(BTreeMap::new());
+    verify_tree_map(BPlusTreeMap::new());
+}
+
+#[test]
+fn b_plus_tree_set_keeps_unique_values_in_order() {
+    let mut set = BPlusTreeSet::new();
+    for value in (0..24).rev() {
+        assert!(set.insert(value));
+    }
+    assert!(!set.insert(12));
+    assert!(set.remove(&12));
+    assert!(!set.remove(&12));
+    assert_eq!(
+        set.iter().copied().collect::<Vec<_>>(),
+        (0..24).filter(|value| *value != 12).collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn b_plus_tree_map_supports_borrowed_string_keys() {
+    let mut map = BPlusTreeMap::new();
+    map.insert(String::from("pear"), 4);
+    map.insert(String::from("apple"), 2);
+    assert_eq!(map.get("apple"), Some(&2));
+    assert_eq!(map.remove("pear"), Some(4));
+    map.clear();
+    assert!(map.is_empty());
 }

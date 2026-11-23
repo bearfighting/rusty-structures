@@ -4,9 +4,9 @@
 //! library. It favors implementations that make ownership, invariants, and
 //! operation costs clear, while still validating important edge cases.
 //!
-//! This crate is organized by data-structure domain. Public modules expose
-//! stable, intentional APIs; implementation details such as node types and
-//! storage layouts remain private unless users need them to work with a type.
+//! Public modules are organized by data-structure domain. Shared internals live
+//! in a private foundation layer, and composed structures reuse the concrete
+//! implementations beneath them. Node types and storage layouts remain private.
 //!
 //! # Design principles
 //!
@@ -18,9 +18,10 @@
 //! - Document invariants, operation complexity, iteration order, and relevant
 //!   limitations for each public data structure.
 //!
-//! The crate is a single library organized by data-structure domain. Algorithms
-//! may be separated from data structure implementations when a real API or
-//! dependency boundary emerges.
+//! The crate is a single library organized by data-structure domain and layered
+//! from public APIs through adapters to concrete storage and shared foundation.
+//! Algorithms may be separated from structures when a real API or dependency
+//! boundary emerges.
 //!
 //! # Roadmap
 //!
@@ -36,8 +37,7 @@ pub mod stack;
 pub mod tree;
 pub mod vector;
 
-mod errors;
-mod ring_buffer;
+mod foundation;
 
 pub use deque::{Deque, TryDequePushError};
 pub use hash::{HashMap, HashSet};
@@ -46,9 +46,9 @@ pub use list::{DoublyLinkedList, SinglyLinkedList};
 pub use queue::{Queue, TryEnqueueError};
 pub use stack::Stack;
 pub use tree::{
-    AvlTree, AvlTreeMap, BTreeMap, BTreeSet, BinarySearchTree, BinarySearchTreeMap,
-    RecursiveBinarySearchTree, RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap,
-    TreeMap, Trie,
+    AvlTree, AvlTreeMap, BPlusTreeMap, BPlusTreeSet, BTreeMap, BTreeSet, BinarySearchTree,
+    BinarySearchTreeMap, RecursiveBinarySearchTree, RecursiveBinarySearchTreeMap, RedBlackTree,
+    RedBlackTreeMap, TreeMap, Trie,
 };
 pub use vector::{TryPushError, TryReserveError, Vector};
 
