@@ -16,6 +16,31 @@ const MIN_LEAF_ENTRIES: usize = 2;
 const MAX_CHILDREN: usize = 4;
 const MIN_CHILDREN: usize = 2;
 
+/// A read-only copy of one node in a B+ tree snapshot.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum BPlusTreeSnapshotNode<K, V> {
+    Leaf {
+        id: usize,
+        entries: Vec<(K, V)>,
+        next: Option<usize>,
+    },
+    Internal {
+        id: usize,
+        separators: Vec<K>,
+        children: Vec<usize>,
+    },
+}
+
+/// A read-only structural snapshot used by diagnostics and visualizers.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct BPlusTreeSnapshot<K, V> {
+    pub root: Option<usize>,
+    pub first_leaf: Option<usize>,
+    pub len: usize,
+    pub height: usize,
+    pub nodes: Vec<BPlusTreeSnapshotNode<K, V>>,
+}
+
 #[derive(Clone, Debug)]
 pub(super) enum Node<K, V> {
     Leaf {
@@ -188,6 +213,43 @@ impl<K, V> BPlusTreeMap<K, V> {
                 separators.partition_point(|sep| sep.as_ref().borrow() <= key)
             }
             Node::Leaf { .. } => unreachable!("leaf has no child index"),
+        }
+    }
+}
+
+impl<K: Clone, V: Clone> BPlusTreeMap<K, V> {
+    /// Copies the current node layout, including the linked leaf chain.
+    #[must_use]
+    pub fn visualization_snapshot(&self) -> BPlusTreeSnapshot<K, V> {
+        let nodes = self
+            .nodes
+            .iter()
+            .enumerate()
+            .filter_map(|(id, node)| match node.as_ref()? {
+                Node::Leaf { entries, next } => Some(BPlusTreeSnapshotNode::Leaf {
+                    id,
+                    entries: entries
+                        .iter()
+                        .map(|(key, value)| (key.as_ref().clone(), value.clone()))
+                        .collect(),
+                    next: *next,
+                }),
+                Node::Internal {
+                    separators,
+                    children,
+                } => Some(BPlusTreeSnapshotNode::Internal {
+                    id,
+                    separators: separators.iter().map(|key| key.as_ref().clone()).collect(),
+                    children: children.clone(),
+                }),
+            })
+            .collect();
+        BPlusTreeSnapshot {
+            root: self.root,
+            first_leaf: self.first_leaf,
+            len: self.len,
+            height: self.height(),
+            nodes,
         }
     }
 }

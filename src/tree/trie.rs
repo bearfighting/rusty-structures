@@ -12,6 +12,26 @@ struct Node {
     children: BTreeMap<char, Node>,
 }
 
+/// An owned read-only copy of a trie, intended for diagnostics and visualizers.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TrieSnapshot {
+    /// The root node, whose prefix is the empty string.
+    pub root: TrieSnapshotNode,
+    /// Number of complete words stored in the trie.
+    pub len: usize,
+}
+
+/// A node in an owned [`TrieSnapshot`].
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TrieSnapshotNode {
+    /// The complete prefix represented by this node.
+    pub prefix: String,
+    /// Whether this prefix is itself a stored word.
+    pub is_word: bool,
+    /// Child edges in character order.
+    pub children: Vec<(char, TrieSnapshotNode)>,
+}
+
 impl Node {
     fn is_empty(&self) -> bool {
         !self.is_word && self.children.is_empty()
@@ -126,6 +146,31 @@ impl Trie {
     /// Returns stored strings in lexicographic order.
     pub fn iter(&self) -> Iter<'_> {
         Iter::new(&self.root, self.len)
+    }
+
+    /// Copies the node layout for diagnostics and visualizers.
+    #[must_use]
+    pub fn visualization_snapshot(&self) -> TrieSnapshot {
+        fn copy(node: &Node, prefix: String) -> TrieSnapshotNode {
+            let children = node
+                .children
+                .iter()
+                .map(|(character, child)| {
+                    let mut child_prefix = prefix.clone();
+                    child_prefix.push(*character);
+                    (*character, copy(child, child_prefix))
+                })
+                .collect();
+            TrieSnapshotNode {
+                prefix,
+                is_word: node.is_word,
+                children,
+            }
+        }
+        TrieSnapshot {
+            root: copy(&self.root, String::new()),
+            len: self.len,
+        }
     }
 }
 

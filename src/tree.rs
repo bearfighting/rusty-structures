@@ -9,11 +9,11 @@ pub mod red_black_tree;
 pub mod trie;
 
 pub use avl_tree::AvlTree;
-pub use b_plus_tree::{BPlusTreeMap, BPlusTreeSet};
+pub use b_plus_tree::{BPlusTreeMap, BPlusTreeSet, BPlusTreeSnapshot, BPlusTreeSnapshotNode};
 pub use b_tree::{BTreeMap, BTreeSet};
 pub use binary_search_tree::{BinarySearchTree, RecursiveBinarySearchTree};
 pub use map::{
     AvlTreeMap, BinarySearchTreeMap, RecursiveBinarySearchTreeMap, RedBlackTreeMap, TreeMap,
 };
 pub use red_black_tree::RedBlackTree;
-pub use trie::Trie;
+pub use trie::{Trie, TrieSnapshot, TrieSnapshotNode};

@@ -83,6 +83,12 @@ where
         self.map.capacity()
     }
 
+    /// Returns the number of buckets currently used by the backing map.
+    #[must_use]
+    pub fn bucket_count(&self) -> usize {
+        self.map.bucket_count()
+    }
+
     /// Returns the set's hash builder.
     #[must_use]
     pub const fn hasher(&self) -> &S {

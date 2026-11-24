@@ -85,6 +85,16 @@ impl<P, T> PriorityQueue<P, T> {
         self.entries.is_empty()
     }
 
+    /// Returns an iterator over the current internal heap layout.
+    ///
+    /// The iteration order is not sorted. It follows the heap's array layout,
+    /// which is useful for inspecting how priorities are arranged.
+    pub fn iter(&self) -> impl Iterator<Item = (&P, &T)> {
+        self.entries
+            .iter()
+            .map(|entry| (&entry.priority, &entry.value))
+    }
+
     /// Removes all queued values.
     pub fn clear(&mut self) {
         self.entries.clear();
