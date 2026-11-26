@@ -43,6 +43,9 @@ abstraction and its implementation together.
   child modules hold iterators or focused implementation details where useful.
 - `Vector<T>` is both a public foundational collection and the storage used by
   several other structures. Its allocation details live under `vector/`.
+- `graph/` separates graph read interfaces, adjacency-list and adjacency-matrix
+  types, and algorithms. Graph algorithms depend on `GraphView` or
+  `WeightedGraphView`, so storage representations can reuse the same logic.
 
 ## Dependency direction
 
