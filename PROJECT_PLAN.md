@@ -110,7 +110,7 @@ src/
 - **当前**：单一库 crate，按领域组织 Rust modules。减少版本和依赖管理负担。
 - **未来可拆分**：当图算法明显独立于结构库，或某部分需要独立依赖、发布或稳定策略时，再拆为 workspace，例如 `data-structures` 与 `algorithms`。
 - **不采用**：初期一结构一个 crate；这种拆分会让依赖和发布复杂化，尚无对应收益。
-- 公共类型通过其领域模块导出，例如 `tree::AvlTree`、`graph::Graph`。尽量避免在 crate 根重复导出所有类型造成命名冲突；根级 re-export 仅用于核心且稳定的类型。
+- 公共类型以领域模块作为规范路径，例如 `tree::AvlTree`、`graph::Graph`。crate 根提供便捷 re-export，并保留已建立的模块路径；新增类型应先在领域模块公开，只有适合作为常用入口时才加入根级 re-export。
 - 内部辅助类型、节点和维护函数使用私有可见性；跨模块共享实现才使用 `pub(crate)`。
 
 ## 公共 API 约定
