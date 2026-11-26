@@ -1,0 +1,53 @@
+project:
+  type: book
+  output-dir: _book
+
+lang: zh-Hans
+book:
+  title: "用 Rust 学数据结构与算法"
+  subtitle: "从接口、不变量到可运行实现"
+  # The Typst book template expects non-null author metadata; keep the byline blank until named.
+  author: " "
+  chapters:
+    - index.qmd
+    - chapters/vector.qmd
+
+number-sections: true
+toc: true
+crossref:
+  fig-title: "图"
+  tbl-title: "表"
+  fig-prefix: "图"
+  tbl-prefix: "表"
+
+format:
+  html:
+    theme: cosmo
+    toc-depth: 3
+    code-copy: true
+    number-sections: true
+  pdf:
+    pdf-engine: lualatex
+    papersize: a4
+    use-rsvg-convert: true
+    mainfont: "Noto Serif CJK SC"
+    sansfont: "Noto Sans CJK SC"
+    monofont: "Noto Sans Mono CJK SC"
+    CJKmainfont: "Noto Serif CJK SC"
+  typst:
+    papersize: a4
+    mainfont: "Noto Serif CJK SC"
+    sansfont: "Noto Sans CJK SC"
+    monofont: "Noto Sans Mono CJK SC"
+    include-in-header:
+      - text: |
+          #set text(font: "Noto Serif CJK SC")
+          #show raw: set text(font: "Noto Sans Mono CJK SC")
+    margin:
+      x: 2.5cm
+      y: 2.2cm
+    fontsize: 10.5pt
+    linestretch: 1.22
+    toc: true
+    number-sections: true
+

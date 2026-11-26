@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="390" viewBox="0 0 1120 390" role="img" aria-labelledby="title desc">
+  <title id="title">Vector 的长度与容量</title>
+  <desc id="desc">六个连续槽位中，前三个已经初始化并保存 A、B、C，长度为三；后三个尚未初始化，容量为六。</desc>
+  <defs>
+    <style>
+      .title { font: 700 28px sans-serif; fill: #172b4d; }
+      .label { font: 600 19px sans-serif; fill: #344563; }
+      .small { font: 16px sans-serif; fill: #5e6c84; }
+      .slottext { font: 700 22px sans-serif; fill: #123b37; }
+      .slotempty { font: 16px sans-serif; fill: #8993a4; }
+      .mono { font: 600 17px monospace; fill: #172b4d; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#526d82"/>
+    </marker>
+  </defs>
+  <rect width="1120" height="390" rx="22" fill="#f7f9fc"/>
+  <text x="64" y="58" class="title">连续存储中的有效前缀</text>
+  <text x="64" y="96" class="small">Vector 保存 3 个值，当前缓冲区可以容纳 6 个值</text>
+  <text x="64" y="148" class="label">索引</text>
+  <g class="mono" text-anchor="middle">
+    <text x="254" y="148">0</text><text x="384" y="148">1</text><text x="514" y="148">2</text>
+    <text x="644" y="148">3</text><text x="774" y="148">4</text><text x="904" y="148">5</text>
+  </g>
+  <g stroke="#ffffff" stroke-width="4">
+    <rect x="190" y="166" width="128" height="76" rx="12" fill="#b7e4d8"/>
+    <rect x="320" y="166" width="128" height="76" rx="12" fill="#b7e4d8"/>
+    <rect x="450" y="166" width="128" height="76" rx="12" fill="#b7e4d8"/>
+    <rect x="580" y="166" width="128" height="76" rx="12" fill="#e8edf4"/>
+    <rect x="710" y="166" width="128" height="76" rx="12" fill="#e8edf4"/>
+    <rect x="840" y="166" width="128" height="76" rx="12" fill="#e8edf4"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="254" y="213" class="slottext">A</text><text x="384" y="213" class="slottext">B</text>
+    <text x="514" y="213" class="slottext">C</text><text x="644" y="209" class="slotempty">未初始化</text>
+    <text x="774" y="209" class="slotempty">未初始化</text><text x="904" y="209" class="slotempty">未初始化</text>
+  </g>
+  <path d="M190 270 v16 H578 v-16" fill="none" stroke="#25806b" stroke-width="3"/>
+  <text x="384" y="319" text-anchor="middle" class="label">已初始化区域 0..len</text>
+  <path d="M190 337 v14 H968 v-14" fill="none" stroke="#526d82" stroke-width="3"/>
+  <text x="579" y="377" text-anchor="middle" class="label">分配容量 0..capacity</text>
+</svg>
