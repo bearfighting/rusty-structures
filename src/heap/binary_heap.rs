@@ -1,12 +1,8 @@
-//! A binary max-heap and priority queue.
+//! Binary max-heap implementation.
 //!
 //! The heap stores its complete binary tree in a `Vector`. Children of index
 //! `i` are at `2 * i + 1` and `2 * i + 2`; every parent is at least as large
 //! as either child.
-
-mod priority_queue;
-
-pub use priority_queue::PriorityQueue;
 
 use crate::Vector;
 

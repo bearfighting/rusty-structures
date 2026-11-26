@@ -60,6 +60,16 @@ impl<T> RingBuffer<T> {
         Ok(())
     }
 
+    pub(crate) fn try_push_back_fixed(&mut self, value: T) -> Result<(), T> {
+        if self.len == self.capacity() {
+            return Err(value);
+        }
+        let index = self.index_at_offset(self.len);
+        self.slots[index] = Some(value);
+        self.len += 1;
+        Ok(())
+    }
+
     pub(crate) fn try_push_front(&mut self, value: T) -> Result<(), (T, TryReserveError)> {
         if self.len == self.capacity()
             && let Err(error) = self.grow()

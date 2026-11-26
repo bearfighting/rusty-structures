@@ -7,10 +7,10 @@
 //! # Code map
 //!
 //! - Start here for the public queue operations.
-//! - `ring_buffer.rs` contains the circular storage implementation.
-//! - `queue/iter.rs` contains the queue iterators.
-//! - `queue/errors.rs` contains fallible enqueue errors.
-//! - `queue/traits.rs` contains collection and `IntoIterator` support.
+//! - `foundation/ring_buffer.rs` contains the shared circular storage.
+//! - `linear/queue/iter.rs` contains the queue iterators.
+//! - `linear/queue/errors.rs` contains fallible enqueue errors.
+//! - `linear/queue/traits.rs` contains collection and `IntoIterator` support.
 
 mod errors;
 mod iter;

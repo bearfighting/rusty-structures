@@ -4,9 +4,11 @@
 //! library. It favors implementations that make ownership, invariants, and
 //! operation costs clear, while still validating important edge cases.
 //!
-//! Public modules are organized by data-structure domain. Shared internals live
-//! in a private foundation layer, and composed structures reuse the concrete
-//! implementations beneath them. Node types and storage layouts remain private.
+//! Public modules are organized by domain, with related sequential containers
+//! grouped under [`linear`] and disjoint-set/range-query structures under
+//! [`range`]. Shared internals live in a private foundation layer, and composed
+//! structures reuse concrete implementations beneath them. Node types and
+//! storage layouts remain private.
 //!
 //! # Design principles
 //!
@@ -28,33 +30,51 @@
 //! See the repository's `ROADMAP.md` for planned stages and `PROJECT_PLAN.md`
 //! for project-wide design and quality conventions.
 
-pub mod deque;
-pub mod disjoint_set;
+pub mod algebra;
+pub mod bit_set;
+pub mod bloom_filter;
 pub mod graph;
 pub mod hash;
 pub mod heap;
+pub mod linear;
 pub mod list;
-pub mod queue;
-pub mod stack;
+pub mod lru_cache;
+pub mod range;
+pub mod skip_list;
 pub mod tree;
-pub mod vector;
 
 mod foundation;
 
+// Compatibility re-exports keep established module paths such as
+// `data_structures::vector::Vector` available alongside the grouped domains.
+pub use linear::{deque, fixed_capacity_queue, queue, stack, vector};
+pub use range::{disjoint_set, fenwick, lazy_segment_tree, segment_tree, sparse_table};
+
+pub use algebra::{Monoid, TryMonoid};
+pub use bit_set::BitSet;
+pub use bloom_filter::{BloomFilter, BloomFilterConfigError};
 pub use deque::{Deque, TryDequePushError};
 pub use disjoint_set::DisjointSet;
+pub use fenwick::FenwickTree;
+pub use fixed_capacity_queue::FixedCapacityQueue;
 pub use graph::{
     AdjacencyMatrixGraph, Graph, NodeId, WeightedAdjacencyMatrixGraph, WeightedGraph, WeightedPath,
     connected_components, strongly_connected_components,
 };
 pub use hash::{HashMap, HashSet};
-pub use heap::{BinaryHeap, PriorityQueue};
+pub use heap::{BinaryHeap, DaryHeap, IndexPriorityQueue, PriorityQueue};
+pub use lazy_segment_tree::{LazySegmentTree, LazySegmentTreeSpec};
 pub use list::{DoublyLinkedList, SinglyLinkedList};
+pub use lru_cache::LruCache;
 pub use queue::{Queue, TryEnqueueError};
+pub use segment_tree::{SegmentTree, SumOverflow};
+pub use skip_list::{SkipListMap, SkipListSet};
+pub use sparse_table::{IdempotentOp, Maximum, Minimum, SparseTable};
 pub use stack::Stack;
 pub use tree::{
     AvlTree, AvlTreeMap, BPlusTreeMap, BPlusTreeSet, BPlusTreeSnapshot, BPlusTreeSnapshotNode,
-    BTreeMap, BTreeSet, BinarySearchTree, BinarySearchTreeMap, RecursiveBinarySearchTree,
+    BTreeMap, BTreeSet, BinarySearchTree, BinarySearchTreeMap, PersistentAvlTreeMap,
+    PersistentAvlTreeMapIter, PersistentTrie, RadixTrie, RecursiveBinarySearchTree,
     RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap, TreeMap, Trie, TrieSnapshot,
     TrieSnapshotNode,
 };
