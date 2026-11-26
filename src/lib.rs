@@ -29,6 +29,8 @@
 //! for project-wide design and quality conventions.
 
 pub mod deque;
+pub mod disjoint_set;
+pub mod graph;
 pub mod hash;
 pub mod heap;
 pub mod list;
@@ -40,6 +42,11 @@ pub mod vector;
 mod foundation;
 
 pub use deque::{Deque, TryDequePushError};
+pub use disjoint_set::DisjointSet;
+pub use graph::{
+    AdjacencyMatrixGraph, Graph, NodeId, WeightedAdjacencyMatrixGraph, WeightedGraph, WeightedPath,
+    connected_components, strongly_connected_components,
+};
 pub use hash::{HashMap, HashSet};
 pub use heap::{BinaryHeap, PriorityQueue};
 pub use list::{DoublyLinkedList, SinglyLinkedList};

@@ -12,6 +12,8 @@
 - 优先结构：`BinaryHeap`、`PriorityQueue`
 - 树与前缀结构：`BinarySearchTree`（迭代版）、`RecursiveBinarySearchTree`、`AvlTree`、`RedBlackTree`、`BTreeMap`、`BTreeSet`、`BPlusTreeMap`、`BPlusTreeSet`、`Trie`
 - 有序映射：`TreeMap` trait，以及由二叉搜索树、AVL 树、红黑树、B 树和 B+ 树支撑的映射实现。它们共享映射行为接口，便于比较不同树的算法和不变量。
+- 图：邻接表 `Graph` / `WeightedGraph` 与矩阵 `AdjacencyMatrixGraph` / `WeightedAdjacencyMatrixGraph`，支持有向/无向图、DFS/BFS、连通分量、拓扑排序、无权最短路径和 Dijkstra 带权最短路径。
+- 区间与查询：`DisjointSet`，使用路径压缩和按大小合并维护不相交集合。
 
 结构的操作语义、复杂度和示例见各自的 Rustdoc；模块分层见 [ARCHITECTURE.md](ARCHITECTURE.md)，推进计划见 [ROADMAP.md](ROADMAP.md)，设计约定见 [PROJECT_PLAN.md](PROJECT_PLAN.md)。
 
