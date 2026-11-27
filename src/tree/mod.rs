@@ -22,4 +22,4 @@ pub use persistent_avl_tree_map::{Iter as PersistentAvlTreeMapIter, PersistentAv
 pub use persistent_trie::PersistentTrie;
 pub use radix_trie::RadixTrie;
 pub use red_black_tree::RedBlackTree;
-pub use trie::{Trie, TrieSnapshot, TrieSnapshotNode};
+pub use trie::{PrefixIter as TriePrefixIter, Trie, TrieSnapshot, TrieSnapshotNode};

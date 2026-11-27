@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 
 mod iter;
 
-pub use iter::Iter;
+pub use iter::{Iter, PrefixIter};
 
 #[derive(Clone, Debug, Default)]
 struct Node {
@@ -146,6 +146,17 @@ impl Trie {
     /// Returns stored strings in lexicographic order.
     pub fn iter(&self) -> Iter<'_> {
         Iter::new(&self.root, self.len)
+    }
+
+    /// Iterates over stored words that start with `prefix`, in lexicographic order.
+    ///
+    /// The iterator starts at the prefix node instead of scanning unrelated
+    /// branches. Locating the prefix takes O(k log d), where `k` is its number
+    /// of Unicode scalar values and `d` is the maximum node degree. Traversal
+    /// then visits only the matching subtree. The empty prefix iterates all words.
+    pub fn words_with_prefix(&self, prefix: &str) -> PrefixIter<'_> {
+        self.node_at(prefix)
+            .map_or_else(PrefixIter::empty, |node| PrefixIter::new(node, prefix))
     }
 
     /// Copies the node layout for diagnostics and visualizers.

@@ -75,8 +75,8 @@ pub use tree::{
     AvlTree, AvlTreeMap, BPlusTreeMap, BPlusTreeSet, BPlusTreeSnapshot, BPlusTreeSnapshotNode,
     BTreeMap, BTreeSet, BinarySearchTree, BinarySearchTreeMap, PersistentAvlTreeMap,
     PersistentAvlTreeMapIter, PersistentTrie, RadixTrie, RecursiveBinarySearchTree,
-    RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap, TreeMap, Trie, TrieSnapshot,
-    TrieSnapshotNode,
+    RecursiveBinarySearchTreeMap, RedBlackTree, RedBlackTreeMap, TreeMap, Trie, TriePrefixIter,
+    TrieSnapshot, TrieSnapshotNode,
 };
 pub use vector::{TryPushError, TryReserveError, Vector};
 
