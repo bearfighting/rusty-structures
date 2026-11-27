@@ -30,5 +30,20 @@ rustc-ice-*.txt
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Local environment and secrets. Keep example templates versioned.
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# OS and editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*.tmp
+*.log
+
 /.quarto/
 **/*.quarto_ipynb
