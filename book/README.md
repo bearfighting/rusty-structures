@@ -19,6 +19,7 @@ Quarto 的 Typst 图书输出默认使用 orange-book 样式。样章完成审�
 ## 内容维护约定
 
 - 章节代码示例应与 `src/` 的 Rustdoc 示例保持一致；当前 `Vector` 基础用法已在 `src/linear/vector.rs` 有可运行的 doctest。
+- 跨结构的综合用法维护在 workspace package `iterator-lab/`，可执行 `cargo run -p iterator-lab`；教材的新示例应优先从这些程序挑选并保持同步。
 - 结构状态图保存为 SVG，保留文本源文件，便于修订与出版前调整。
 - 复杂度和边界行为必须与实现同步。修改 API 后，检查本章接口表、例子和源码导读。
 - 生成目录 `_book/` 是构建产物，不在教材源文件中手工修改。

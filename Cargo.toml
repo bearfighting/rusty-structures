@@ -11,5 +11,5 @@ path = "src/lib.rs"
 [dependencies]
 
 [workspace]
-members = ["visualizer-wasm"]
+members = ["visualizer-wasm", "iterator-lab"]
 resolver = "3"

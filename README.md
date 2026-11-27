@@ -21,6 +21,8 @@
 
 结构的操作语义、复杂度和示例见各自的 Rustdoc；模块分层与 algebra 合约见 [ARCHITECTURE.md](ARCHITECTURE.md)，推进计划见 [ROADMAP.md](ROADMAP.md)，设计约定见 [PROJECT_PLAN.md](PROJECT_PLAN.md)。
 
+教材的迭代器综合章配有独立可运行的例子：在仓库根目录执行 `cargo run -p iterator-lab`，或阅读 [`iterator-lab/README.md`](iterator-lab/README.md) 按主题查看。
+
 数据结构可视化教学工具的原型设计见 [VISUALIZER_DESIGN.md](VISUALIZER_DESIGN.md)，分阶段交付计划见 [VISUALIZER_ROADMAP.md](VISUALIZER_ROADMAP.md)。
 
 ## 验证
