@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="380" viewBox="0 0 1050 380" role="img" aria-labelledby="title desc">
+  <title id="title">单链表与双端链表的节点链接</title>
+  <desc id="desc">上图展示单链表的 next 所有权链接及 head 和 tail 指针。下图展示双端链表中 next 拥有后继、prev 非拥有地指向前驱。</desc>
+  <defs>
+    <marker id="ownArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#286a4b"/></marker>
+    <marker id="rawArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a13d38"/></marker>
+    <style>text{font-family:sans-serif}.node{fill:#e5f3eb;stroke:#40516a;stroke-width:2}.label{font-size:18px;fill:#243247}.small{font-size:15px;fill:#526174}.title{font-size:22px;font-weight:700;fill:#243247}</style>
+  </defs>
+  <rect width="1050" height="380" rx="18" fill="#f7f8fa"/>
+  <text x="38" y="42" class="title">单链表：next 拥有后继节点</text>
+  <text x="38" y="102" class="label">head</text><path d="M84 96 H142" stroke="#286a4b" stroke-width="3" marker-end="url(#ownArrow)"/>
+  <rect class="node" x="150" y="70" width="150" height="58" rx="9"/><rect class="node" x="405" y="70" width="150" height="58" rx="9"/><rect class="node" x="660" y="70" width="150" height="58" rx="9"/>
+  <text x="225" y="106" text-anchor="middle" class="label">A | next</text><text x="480" y="106" text-anchor="middle" class="label">B | next</text><text x="735" y="106" text-anchor="middle" class="label">C | None</text>
+  <path d="M300 99 H395" stroke="#286a4b" stroke-width="3" marker-end="url(#ownArrow)"/><path d="M555 99 H650" stroke="#286a4b" stroke-width="3" marker-end="url(#ownArrow)"/>
+  <text x="830" y="104" class="label">tail</text><path d="M825 96 H812" stroke="#a13d38" stroke-width="2.5" marker-end="url(#rawArrow)"/>
+  <text x="38" y="157" class="small">绿色实线：Box 所有权链　　红色虚线：非拥有的 tail 指针</text>
+  <path d="M35 184 H1015" stroke="#d4dae2" stroke-width="1.5"/>
+  <text x="38" y="222" class="title">双端链表：prev 仅指回前驱，不拥有节点</text>
+  <text x="38" y="300" class="label">head</text><path d="M84 294 H142" stroke="#286a4b" stroke-width="3" marker-end="url(#ownArrow)"/>
+  <rect class="node" x="150" y="268" width="150" height="58" rx="9"/><rect class="node" x="405" y="268" width="150" height="58" rx="9"/><rect class="node" x="660" y="268" width="150" height="58" rx="9"/>
+  <text x="225" y="304" text-anchor="middle" class="label">A</text><text x="480" y="304" text-anchor="middle" class="label">B</text><text x="735" y="304" text-anchor="middle" class="label">C</text>
+  <path d="M300 294 H395" stroke="#286a4b" stroke-width="3" marker-end="url(#ownArrow)"/><path d="M555 294 H650" stroke="#286a4b" stroke-width="3" marker-end="url(#ownArrow)"/>
+  <path d="M405 315 C365 352 340 352 300 315" fill="none" stroke="#a13d38" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#rawArrow)"/><path d="M660 315 C620 352 595 352 555 315" fill="none" stroke="#a13d38" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#rawArrow)"/>
+  <text x="830" y="300" class="label">tail</text><path d="M825 292 H812" stroke="#a13d38" stroke-width="2.5" marker-end="url(#rawArrow)"/>
+  <text x="38" y="367" class="small">反向虚线是 prev；它提供前驱访问，但不形成第二条所有权链。</text>
+</svg>

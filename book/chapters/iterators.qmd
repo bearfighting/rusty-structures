@@ -1,0 +1,295 @@
+# 迭代器：把数据结构接入算法
+
+迭代器把“从哪里取得下一个元素”与“怎样处理元素”分开。`Vector` 顺着连续槽位前进，链表顺着节点链接前进，树按结构定义的顺序遍历，图则逐个枚举当前节点的邻居；一旦它们实现标准迭代器接口，就能接入相同的 `map`、`filter`、`fold`、`collect` 等算法。
+
+本章会把迭代器适配器和项目中的数据结构放在一起讲。配套的 `iterator-lab` 是可运行的示例 package；教材中的示例按主题组织，完整程序可在仓库根目录运行：
+
+```sh
+cargo run -p iterator-lab
+```
+
+示例源码位于 `iterator-lab/src/`，各文件分别展示线性容器、映射与有序结构、堆、图和区间查询。它既是本章示例的可执行版本，也可以作为继续尝试 iterator 组合的练习场。
+
+## 先区分借用、可变借用和所有权移交
+
+Rust 集合常见三种遍历方式：
+
+| 写法 | 元素类型 | 集合之后能否继续使用 | 适合任务 |
+|---|---|---|---|
+| `collection.iter()` 或 `&collection` | `&T` | 可以 | 查询、过滤、借用处理 |
+| `collection.iter_mut()` 或 `&mut collection` | `&mut T` | 可以 | 原位修改元素 |
+| `collection.into_iter()` 或 `collection` | `T` | 不可以，集合所有权已移交 | 转换容器、消费或移动元素 |
+
+```rust
+use data_structures::Vector;
+
+let mut values: Vector<_> = [2, 4, 6].into_iter().collect();
+
+let doubled: Vec<_> = values.iter().map(|value| value * 2).collect();
+assert_eq!(doubled, [4, 8, 12]);
+assert_eq!(values[0], 2); // `iter` 只借用元素
+
+for value in values.iter_mut() {
+    *value += 1;
+}
+assert_eq!(&*values, &[3, 5, 7]);
+
+let owned: Vec<_> = values.into_iter().collect();
+assert_eq!(owned, [3, 5, 7]);
+```
+
+借用迭代器的条目是引用，所以常见组合是 `.iter().copied()`（复制 `Copy` 值）或 `.iter().cloned()`（克隆值）。不要为了调用 `collect` 就先克隆整个集合；先确定后续步骤是否真正需要取得所有权。
+
+## 迭代器是惰性流水线
+
+`map`、`filter`、`take`、`skip`、`enumerate`、`zip` 和 `flat_map` 会组合出新的迭代器，但通常不会立即遍历数据。消费它的 `collect`、`for` 循环、`count`、`sum`、`fold`、`find`、`any` 或 `all` 才会推进流水线。
+
+| 目的 | 常见方法 | 示例意图 |
+|---|---|---|
+| 转换 | `map` | 把每个成绩换算成百分制 |
+| 保留满足条件的元素 | `filter` | 只留下偶数或有效记录 |
+| 过滤并转换 | `filter_map` | 丢弃无效解析结果并取出有效值 |
+| 展开一对多结果 | `flat_map` | 展平每个节点的邻居列表 |
+| 跳过或限制数量 | `skip`、`take`、`take_while` | 分页或只处理前缀 |
+| 保留位置或配对数据 | `enumerate`、`zip` | 附上序号或并排比较两个序列 |
+| 汇总状态 | `fold`、`try_fold` | 计算总和、直方图，或遇错提前退出 |
+| 提前判定 | `find`、`position`、`any`、`all` | 找首个命中项或验证条件 |
+
+```rust
+use data_structures::Vector;
+
+let scores: Vector<_> = [41, 88, 73, 96, 58, 91].into_iter().collect();
+let passing: Vec<_> = scores
+    .iter()
+    .copied()
+    .filter(|score| *score >= 60)
+    .map(|score| (score, score + 5))
+    .collect();
+assert_eq!(passing, [(88, 93), (73, 78), (96, 101), (91, 96)]);
+
+let average = scores.iter().map(|&score| u32::from(score)).sum::<u32>()
+    / scores.len() as u32;
+assert_eq!(average, 74);
+```
+
+流水线会按需执行。比如 `any` 一旦找到满足条件的元素就停止；`collect` 则会继续到迭代器耗尽。对大型或无限迭代器，优先使用 `find`、`take` 等有界消费方式，避免无意中收集全部元素。
+
+## 遍历顺序由数据结构语义决定
+
+相同的 `collect::<Vec<_>>()`，放在不同结构上会得到不同含义。容器的遍历顺序不是统一的“插入顺序”。
+
+| 结构 | 遍历顺序 | 适合的处理 |
+|---|---|---|
+| `Vector` | 索引从小到大 | 顺序扫描、排序前处理、按位置配对 |
+| `Stack` | 栈顶到栈底 | 查看后进先出的待处理项 |
+| `Queue` | 队首到队尾 | 按到达顺序处理任务 |
+| `FixedCapacityQueue` | 队首到队尾 | 遍历固定容量缓冲区中的有效元素 |
+| `Deque` | 队首到队尾；迭代器可双向消费 | 从两端读，或用 `rev()` 反向读取 |
+| `SinglyLinkedList`、`DoublyLinkedList` | 头到尾；双端链表部分迭代器支持双向 | 端点序列与所有权示例 |
+| `HashMap`、`HashSet` | 任意顺序 | 查找、聚合；展示前自行排序 |
+| BST、递归 BST、AVL、红黑树及其 map | 按元素或键升序 | 排序扫描、合并有序序列 |
+| `BTreeMap/Set`、`BPlusTreeMap/Set`、`SkipListMap/Set` | 按元素或键升序 | 有序遍历和范围输出 |
+| `PersistentAvlTreeMap` | 按键升序 | 在保留版本的映射上执行有序查询 |
+| `Trie`、`RadixTrie`、`PersistentTrie` | 字典序 | 自动补全候选、词汇导出 |
+| `BinaryHeap`、`DaryHeap`、`PriorityQueue` | 内部堆布局，不是优先级排序 | 检查结构；按优先级应反复 `pop` |
+| `BitSet` | 已置位索引升序 | 稀疏地扫描一个有界整数域 |
+| `LruCache` | 最近使用到最久未使用 | 检查淘汰顺序与缓存内容 |
+| 图的邻接表/邻接矩阵表示 | 单个节点的邻居；顺序依表示而异 | `neighbors` 做局部扩展，BFS/DFS 做全局遍历 |
+
+哈希结构的迭代顺序不应写入测试预期或直接当作稳定输出。如果需要确定输出，可先映射成普通 `Vec`，再调用 `sort`/`sort_by_key`。相反，有序树和跳表已经按键顺序迭代，不需要再排序。
+
+## 线性容器：顺序、反向和两端消费
+
+### 栈与队列的迭代顺序
+
+```rust
+use data_structures::{Queue, Stack};
+
+let stack: Stack<_> = ["打开文件", "读取内容", "关闭文件"].into_iter().collect();
+assert_eq!(stack.iter().copied().collect::<Vec<_>>(),
+           ["关闭文件", "读取内容", "打开文件"]);
+
+let queue: Queue<_> = ["请求 A", "请求 B", "请求 C"].into_iter().collect();
+assert_eq!(queue.iter().copied().collect::<Vec<_>>(),
+           ["请求 A", "请求 B", "请求 C"]);
+```
+
+两种容器底层都可能使用向量存储，但抽象顺序不同：栈迭代从栈顶开始，队列迭代从队首开始。算法应依赖抽象接口的次序，而不是猜测底层内存布局。
+
+### 双端迭代器与 `rev`
+
+```rust
+use data_structures::Deque;
+
+let mut history = Deque::new();
+history.push_back("页面 1");
+history.push_back("页面 2");
+history.push_back("页面 3");
+
+let forward: Vec<_> = history.iter().copied().collect();
+let backward: Vec<_> = history.iter().rev().copied().collect();
+assert_eq!(forward, ["页面 1", "页面 2", "页面 3"]);
+assert_eq!(backward, ["页面 3", "页面 2", "页面 1"]);
+
+let mut ends = history.iter();
+assert_eq!(ends.next(), Some(&"页面 1"));
+assert_eq!(ends.next_back(), Some(&"页面 3"));
+```
+
+实现 `DoubleEndedIterator` 后，可以用 `.rev()` 反向遍历，也可以直接交替调用 `next` 和 `next_back`。双端迭代器需要保证两端游标相遇时不重复返回中间元素；标准接口的 `len()` 对精确长度迭代器也有帮助。
+
+### `enumerate`、`zip` 与并行序列
+
+```rust
+let names = ["Ada", "Grace", "Linus"];
+let points = [98, 95, 87];
+let report: Vec<_> = names
+    .iter()
+    .zip(points)
+    .enumerate()
+    .map(|(index, (&name, point))| (index + 1, name, point))
+    .collect();
+assert_eq!(report, [(1, "Ada", 98), (2, "Grace", 95), (3, "Linus", 87)]);
+```
+
+`zip` 在任一输入结束时就结束，因此长度不同时只处理较短的一边。若长度必须一致，应先显式检查长度，或在算法中处理缺失项，别让截断悄悄改变结果。
+
+## 映射、集合与直方图
+
+迭代器经常用于把数据转换成映射/集合，或把映射中的条目转换成报告。下面的哈希表例子用普通循环累积计数，之后再用 iterator 适配器筛选并排序输出：
+
+```rust
+use data_structures::HashMap;
+
+let events = ["open", "save", "open", "close", "save", "open"];
+let mut counts = HashMap::new();
+for event in events {
+    let old = counts.get(event).copied().unwrap_or(0usize);
+    counts.insert(event, old + 1);
+}
+
+let mut frequent: Vec<_> = counts
+    .iter()
+    .filter_map(|(&event, &count)| (count >= 2).then_some((event, count)))
+    .collect();
+frequent.sort_unstable();
+assert_eq!(frequent, [("open", 3), ("save", 2)]);
+```
+
+这里有两个容易忽略的选择：计数需要改变累积状态，所以用循环表达更直接；哈希表迭代无序，所以为输出排序。并不是每一步都必须改写成链式表达式，清晰表达状态变化更重要。
+
+## 有序结构：归并、范围与前缀
+
+两个升序迭代器可以用 `peekable` 做归并，不需要先把全部数据合并后再排序：
+
+```rust
+use data_structures::AvlTree;
+
+let left: AvlTree<_> = [1, 4, 7, 10].into_iter().collect();
+let right: AvlTree<_> = [2, 4, 6, 10].into_iter().collect();
+let mut a = left.iter().peekable();
+let mut b = right.iter().peekable();
+let mut merged = Vec::new();
+
+while let (Some(&x), Some(&y)) = (a.peek(), b.peek()) {
+    if x <= y {
+        merged.push(*a.next().unwrap());
+    } else {
+        merged.push(*b.next().unwrap());
+    }
+}
+merged.extend(a.copied());
+merged.extend(b.copied());
+assert_eq!(merged, [1, 2, 4, 4, 6, 7, 10, 10]);
+```
+
+若两个输入长度分别为 `m` 和 `n`，归并只前进各输入一次，时间为 `O(m+n)`。同样的模式可用于两个有序索引、事件流或树中导出的键序列。
+
+Trie 迭代器按字典序产出完整单词。对前缀查询，先用 `starts_with` 判断前缀是否存在；当前公开 API 的 `iter()` 遍历所有词，并没有直接返回“仅此前缀子树”的迭代器，所以不能把全量遍历误写成高效前缀扫描。
+
+## 堆：迭代内部布局不等于按优先级取出
+
+`BinaryHeap::iter()` 是为了观察所有元素，它按内部数组布局访问，并不保证从大到小。若算法需要优先级次序，应使用 `pop()`；这会改变堆并移交所有权：
+
+```rust
+use data_structures::BinaryHeap;
+
+let mut jobs: BinaryHeap<_> = [4, 9, 2, 7].into_iter().collect();
+let priority_order: Vec<_> = std::iter::from_fn(|| jobs.pop()).collect();
+assert_eq!(priority_order, [9, 7, 4, 2]);
+```
+
+`from_fn` 把“每次取出一个最大项，直到返回 `None`”包装成迭代器，之后就能复用 `collect`。如果只想找最大值且保留堆，应使用 `peek()`；如果确实需要完整排序但保留原堆，可对 `iter().copied()` 收集后排序，不过会额外分配和排序。
+
+## 图：邻居迭代器与遍历算法
+
+图的 `neighbors(node)` 返回该节点相邻节点的迭代器，适合本地检查；BFS/DFS 则是更高层的图算法，会综合使用待处理结构和已访问集合：
+
+```rust
+use data_structures::Graph;
+use data_structures::graph::breadth_first_search;
+
+let mut graph = Graph::undirected();
+let nodes: Vec<_> = (0..5).map(|_| graph.add_node()).collect();
+for (a, b) in [(0, 1), (0, 2), (1, 3), (2, 4)] {
+    graph.add_edge(nodes[a], nodes[b]);
+}
+
+let immediate: Vec<_> = graph.neighbors(nodes[0]).unwrap().collect();
+let bfs_order = breadth_first_search(&graph, nodes[0]).unwrap();
+let numbered: Vec<_> = bfs_order.iter().enumerate().collect();
+assert_eq!(immediate, [nodes[1], nodes[2]]);
+assert_eq!(numbered.len(), 5);
+```
+
+邻居列表的次序通常来自边的存储顺序，不等于节点编号排序，也不必等于 BFS 的全局次序。若输出要稳定，应明确按什么键排序邻居；若只关心可达集合，比较集合或布尔结果，不要依赖某一条合法遍历顺序。
+
+## 范围查询结构并不一定提供元素迭代
+
+`SegmentTree` 的目的在于高效合并区间结果，它公开 `query`/`range_sum`，但不公开把内部节点当作元素序列遍历的迭代器。拿到原始输入时，用原始切片做逐项筛选；要聚合区间时，用线段树查询：
+
+```rust
+use data_structures::SegmentTree;
+
+let source = [3_i64, 1, 4, 1, 5, 9];
+let tree = SegmentTree::from_values(&source).unwrap();
+let odd_values: Vec<_> = source.iter().copied().filter(|x| x % 2 == 1).collect();
+let range_total = tree.range_sum(1, 5).unwrap().unwrap();
+assert_eq!(odd_values, [3, 1, 1, 5, 9]);
+assert_eq!(range_total, 11);
+```
+
+有些结构只提供某种查询或成员关系，没有 `iter()`：例如 Bloom filter 只能回答可能存在/确定不存在，不能枚举插入过的值；并查集适合查询连通分量代表元，并不提供按集合分组的迭代器。这是抽象职责的差别，不是所有数据结构都必须实现 `Iterator`。
+
+## 迭代器写法的边界与常见错误
+
+1. **弄清条目类型。** `.iter()` 给出引用；比较、算术和 `collect` 时，确认是否需要 `copied()`、`cloned()` 或解引用。
+2. **不要假设遍历顺序。** HashMap/HashSet 任意顺序，堆是内部布局，图邻居按存储顺序；有序树、Trie、BitSet 才有明确的升序语义。
+3. **记住惰性和短路。** 没有消费者时 `map`/`filter` 不会执行；`find`、`any` 会提前停止。
+4. **留意 `zip` 截断。** 长短不同会按短的一边结束。
+5. **避免不必要的 `collect`.** 能接着传递迭代器就不必先分配 `Vec`；需要复用、排序、索引或打断借用时，收集到具体容器才有价值。
+6. **复杂度仍由底层结构决定。** 树迭代通常每个元素摊销常数步，链表一次前进为常数步；迭代器适配器不会把线性查找变成常数时间。
+
+## 源码导读
+
+- `iterator-lab/src/linear.rs`：线性容器顺序、适配器、可变借用与短路消费者。
+- `iterator-lab/src/collections.rs`：哈希无序输出、有序映射、Trie 与 BitSet。
+- `iterator-lab/src/heaps.rs`：堆布局遍历和按优先级消费的区别。
+- `iterator-lab/src/graphs.rs`：局部邻居迭代器与 BFS 结果处理。
+- `iterator-lab/src/ranges.rs`：区分元素遍历和区间聚合查询。
+- `src/linear/*/iter.rs`、`src/list/*/iter.rs`、`src/hash/*/iter.rs`：借用、可变和拥有型迭代器如何推进。
+
+## 练习
+
+1. 用 `Vector` 的 `iter_mut` 把所有负数替换成 0，再用 `filter` 统计正数个数；解释为什么第一个阶段需要可变借用。
+2. 将 `Stack` 与 `Queue` 都从同一个数组 `collect` 构造，比较它们的遍历结果和消费顺序。
+3. 从 `HashMap` 迭代出键值对，筛选出值大于阈值的项，并按键排序后输出。
+4. 用 `fold` 计算一个整数序列的最大前缀和；与 `sum` 相比，`fold` 的累积状态是什么？
+5. 对双端迭代器交替调用 `next` 和 `next_back`，记录每步的 `len()`，证明中点不会重复。
+6. 写出 `BinaryHeap` 的内部迭代结果，再用重复 `pop` 取优先级顺序；哪些结论可以稳定断言？
+7. 从图中取一个节点的邻居，使用 `filter` 保留满足条件的节点；再用 BFS 取得全图遍历结果。两者回答的问题有什么不同？
+8. 找出两个没有公开元素迭代器的数据结构，说明为什么对它们而言“枚举全部元素”不是主要抽象。
+
+## 本章小结
+
+迭代器让不同存储结构共享算法组合方式，但不抹平它们在所有权、遍历顺序和复杂度上的差异。先选择共享借用、可变借用或所有权移交，再确认迭代顺序和条目类型，最后组合适配器并选择明确的消费者。对于优先队列、图遍历和区间查询等问题，还要调用结构本身提供的算法；普通 `iter()` 并不自动表达领域语义。

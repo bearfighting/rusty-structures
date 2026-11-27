@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="590" viewBox="0 0 1000 590" role="img" aria-labelledby="title desc">
+  <title id="title">最大堆布局、插入上滤与移除下滤</title>
+  <desc id="desc">顶部用数组索引标注最大二叉堆。底部展示插入 10 后沿索引 3、1、0 上滤，以及移除 9 后用 6 补根并与较大孩子 8 交换。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c45b2a"/></marker><style>text{font-family:sans-serif}.title{font-size:20px;font-weight:700;fill:#243247}.node{fill:#e5f3eb;stroke:#40516a;stroke-width:2}.edge{stroke:#718096;stroke-width:2}.path{stroke:#c45b2a;stroke-width:3;fill:none;marker-end:url(#arrow)}.cell{fill:#fff;stroke:#718096;stroke-width:1.5}.hot{fill:#fff2cc;stroke:#a47714;stroke-width:2}.label{font-size:16px;fill:#243247}.small{font-size:13px;fill:#526174}</style></defs>
+  <rect width="1000" height="590" rx="18" fill="#f7f8fa"/>
+  <text x="32" y="36" class="title">完全二叉树按层序存入数组</text>
+  <g class="edge"><path d="M500 76 L360 132 M500 76 L640 132 M360 150 L290 207 M360 150 L430 207 M640 150 L570 207 M640 150 L710 207"/></g>
+  <g><circle class="node" cx="500" cy="68" r="23"/><circle class="node" cx="360" cy="140" r="23"/><circle class="node" cx="640" cy="140" r="23"/><circle class="node" cx="290" cy="215" r="23"/><circle class="node" cx="430" cy="215" r="23"/><circle class="node" cx="570" cy="215" r="23"/><circle class="node" cx="710" cy="215" r="23"/></g>
+  <g class="label" text-anchor="middle" dominant-baseline="central"><text x="500" y="68">9</text><text x="360" y="140">7</text><text x="640" y="140">8</text><text x="290" y="215">1</text><text x="430" y="215">4</text><text x="570" y="215">2</text><text x="710" y="215">6</text></g>
+  <text x="32" y="260" class="small">索引：0, 1, 2, 3, 4, 5, 6　　值：[9, 7, 8, 1, 4, 2, 6]</text>
+  <path d="M25 282 H975" stroke="#d4dae2"/>
+  <text x="32" y="312" class="title">插入 10：追加到末尾后上滤</text>
+  <text x="32" y="344" class="small">追加</text>
+  <g text-anchor="middle" dominant-baseline="central" class="label"><rect class="cell" x="100" y="328" width="46" height="34"/><rect class="cell" x="146" y="328" width="46" height="34"/><rect class="cell" x="192" y="328" width="46" height="34"/><rect class="hot" x="238" y="328" width="46" height="34"/><rect class="cell" x="284" y="328" width="46" height="34"/><rect class="cell" x="330" y="328" width="46" height="34"/><rect class="cell" x="376" y="328" width="46" height="34"/><rect class="hot" x="422" y="328" width="46" height="34"/><text x="123" y="345">9</text><text x="169" y="345">7</text><text x="215" y="345">8</text><text x="261" y="345">1</text><text x="307" y="345">4</text><text x="353" y="345">2</text><text x="399" y="345">6</text><text x="445" y="345">10</text></g>
+  <path d="M470 345 H510" class="path"/><text x="520" y="344" class="small">交换 10↔1，再 10↔7，再 10↔9</text>
+  <text x="32" y="398" class="small">结果</text>
+  <g text-anchor="middle" dominant-baseline="central" class="label"><rect class="hot" x="100" y="380" width="46" height="34"/><rect class="cell" x="146" y="380" width="46" height="34"/><rect class="cell" x="192" y="380" width="46" height="34"/><rect class="cell" x="238" y="380" width="46" height="34"/><rect class="cell" x="284" y="380" width="46" height="34"/><rect class="cell" x="330" y="380" width="46" height="34"/><rect class="cell" x="376" y="380" width="46" height="34"/><rect class="cell" x="422" y="380" width="46" height="34"/><text x="123" y="397">10</text><text x="169" y="397">9</text><text x="215" y="397">8</text><text x="261" y="397">7</text><text x="307" y="397">4</text><text x="353" y="397">2</text><text x="399" y="397">6</text><text x="445" y="397">1</text></g>
+  <path d="M25 430 H975" stroke="#d4dae2"/>
+  <text x="32" y="460" class="title">移除 9：末尾 6 补根，再向较大孩子下滤</text>
+  <text x="32" y="495" class="small">补根</text>
+  <g text-anchor="middle" dominant-baseline="central" class="label"><rect class="hot" x="100" y="478" width="46" height="34"/><rect class="cell" x="146" y="478" width="46" height="34"/><rect class="cell" x="192" y="478" width="46" height="34"/><rect class="cell" x="238" y="478" width="46" height="34"/><rect class="cell" x="284" y="478" width="46" height="34"/><rect class="cell" x="330" y="478" width="46" height="34"/><text x="123" y="495">6</text><text x="169" y="495">7</text><text x="215" y="495">8</text><text x="261" y="495">1</text><text x="307" y="495">4</text><text x="353" y="495">2</text></g>
+  <path d="M390 495 H430" class="path"/><text x="440" y="495" class="small">6 与较大孩子 8 交换</text>
+  <text x="32" y="548" class="small">最终数组：[8, 7, 6, 1, 4, 2]　　每次只沿一条根到叶路径修复堆序。</text>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340" role="img" aria-labelledby="title desc">
+  <title id="title">独立链地址哈希表的桶与冲突</title>
+  <desc id="desc">四个桶中，键 A 和 C 冲突并进入同一桶，查找时依次比较桶内键；其余桶各存一个键或为空。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#526174"/></marker>
+    <style>text{font-family:sans-serif}.title{font-size:22px;font-weight:700;fill:#243247}.label{font-size:18px;fill:#243247}.small{font-size:15px;fill:#526174}.bucket{fill:#edf1f6;stroke:#526174;stroke-width:2}.entry{fill:#d7ecdf;stroke:#286a4b;stroke-width:2}.query{fill:#fff2cc;stroke:#a47714;stroke-width:2}</style>
+  </defs>
+  <rect width="1000" height="340" rx="18" fill="#f7f8fa"/>
+  <text x="36" y="42" class="title">哈希值定位桶；桶内再比较键</text>
+  <rect x="42" y="115" width="190" height="66" rx="10" class="query"/><text x="137" y="144" text-anchor="middle" class="label">查询键 C</text><text x="137" y="166" text-anchor="middle" class="small">hash(C) % 4 = 1</text>
+  <path d="M235 148 H340 V112 H400" fill="none" stroke="#526174" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="43" y="224" class="small">冲突：A 与 C 都落在桶 1</text>
+  <g text-anchor="middle">
+    <rect x="400" y="78" width="125" height="52" rx="8" class="bucket"/><text x="462" y="110" class="label">桶 0</text><text x="462" y="155" class="small">空</text>
+    <rect x="550" y="78" width="125" height="52" rx="8" class="bucket"/><text x="612" y="110" class="label">桶 1</text>
+    <rect x="700" y="78" width="125" height="52" rx="8" class="bucket"/><text x="762" y="110" class="label">桶 2</text>
+    <rect x="850" y="78" width="125" height="52" rx="8" class="bucket"/><text x="912" y="110" class="label">桶 3</text>
+    <rect x="555" y="156" width="115" height="48" rx="8" class="entry"/><text x="612" y="187" class="label">A → 10</text>
+    <rect x="555" y="222" width="115" height="48" rx="8" class="entry"/><text x="612" y="253" class="label">C → 12</text>
+    <path d="M612 131 V149" stroke="#286a4b" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M612 205 V215" stroke="#286a4b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  </g>
+  <text x="700" y="181" class="small">先比较 A；不相等，继续</text>
+  <text x="700" y="247" class="small">与 C 相等，找到目标</text>
+  <text x="400" y="310" class="small">桶是候选集合；相同桶索引不代表键相等。</text>
+</svg>

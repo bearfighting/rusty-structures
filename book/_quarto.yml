@@ -10,7 +10,18 @@ book:
   author: " "
   chapters:
     - index.qmd
+    - roadmap.qmd
     - chapters/vector.qmd
+    - chapters/linear.qmd
+    - chapters/lists.qmd
+    - chapters/hash.qmd
+    - chapters/trees.qmd
+    - chapters/tree-variants.qmd
+    - chapters/heaps.qmd
+    - chapters/graphs.qmd
+    - chapters/range.qmd
+    - chapters/advanced.qmd
+    - chapters/iterators.qmd
 
 number-sections: true
 toc: true

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="340" viewBox="0 0 1000 340" role="img" aria-labelledby="title desc">
+  <title id="title">B 树和 B+ 树节点布局比较</title>
+  <desc id="desc">左侧 B 树在内部节点保存键值并分隔子树。右侧 B+ 树内部节点保存分隔键，叶节点保存记录并由 next 链接。</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#718096"/></marker><style>text{font-family:sans-serif}.title{font-size:20px;font-weight:700;fill:#243247}.node{fill:#e5f3eb;stroke:#40516a;stroke-width:2}.leaf{fill:#e8effa;stroke:#40516a;stroke-width:2}.line{stroke:#718096;stroke-width:2;fill:none}.note{font-size:15px;fill:#526174}.label{font-size:17px;fill:#243247}</style></defs>
+  <rect width="1000" height="340" rx="18" fill="#f7f8fa"/>
+  <text x="35" y="38" class="title">B 树：键值对可出现在内部节点</text>
+  <rect x="85" y="66" width="225" height="48" rx="8" class="node"/><text x="197" y="96" text-anchor="middle" class="label">[20 | 40]</text>
+  <path d="M125 114 L85 155 M197 114 L197 155 M270 114 L310 155" class="line" marker-end="url(#arrow)"/>
+  <rect x="40" y="160" width="110" height="42" rx="7" class="leaf"/><rect x="160" y="160" width="110" height="42" rx="7" class="leaf"/><rect x="280" y="160" width="110" height="42" rx="7" class="leaf"/>
+  <text x="95" y="187" text-anchor="middle" class="label">[5, 12]</text><text x="215" y="187" text-anchor="middle" class="label">[25, 31]</text><text x="335" y="187" text-anchor="middle" class="label">[50, 61]</text>
+  <text x="38" y="240" class="note">左子树 &lt; 20　　20–40　　右子树 &gt; 40</text>
+  <path d="M485 28 V310" stroke="#d4dae2" stroke-width="1.5"/>
+  <text x="525" y="38" class="title">B+ 树：内部索引，叶节点存记录</text>
+  <rect x="620" y="66" width="245" height="48" rx="8" class="node"/><text x="742" y="96" text-anchor="middle" class="label">分隔键 [20 | 40]</text>
+  <path d="M660 114 L600 155 M742 114 L742 155 M825 114 L885 155" class="line" marker-end="url(#arrow)"/>
+  <rect x="525" y="160" width="145" height="48" rx="7" class="leaf"/><rect x="690" y="160" width="145" height="48" rx="7" class="leaf"/><rect x="855" y="160" width="120" height="48" rx="7" class="leaf"/>
+  <text x="597" y="190" text-anchor="middle" class="label">[5, 12]</text><text x="762" y="190" text-anchor="middle" class="label">[20, 31]</text><text x="915" y="190" text-anchor="middle" class="label">[40, 61]</text>
+  <path d="M670 184 H682 M835 184 H847" stroke="#286a4b" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="525" y="240" class="note">叶链按键序扫描；记录只在叶层保存。</text>
+  <text x="38" y="302" class="note">图中节点占用为示意；仓库实现的阶数较小，便于观察分裂、借位与合并。</text>
+</svg>

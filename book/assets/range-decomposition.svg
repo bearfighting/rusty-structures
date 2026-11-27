@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="330" viewBox="0 0 1000 330" role="img" aria-labelledby="title desc">
+  <title id="title">半开区间 2..7 的分块覆盖</title>
+  <desc id="desc">数组索引 0 到 7 中，查询范围 2 到 7 包含索引 2、3、4、5、6，可拆为互不重叠的区间 2..4、4..6、6..7。</desc>
+  <defs><style>text{font-family:sans-serif}.title{font-size:21px;font-weight:700;fill:#243247}.cell{fill:#fff;stroke:#718096;stroke-width:1.5}.cover{fill:#bfe6d0;stroke:#286a4b;stroke-width:1.5}.outside{fill:#edf1f6;stroke:#718096;stroke-width:1.5}.label{font-size:17px;fill:#243247}.small{font-size:15px;fill:#526174}</style></defs>
+  <rect width="1000" height="330" rx="18" fill="#f7f8fa"/>
+  <text x="36" y="42" class="title">查询半开区间 2..7（包含 2，不含 7）</text>
+  <g text-anchor="middle" dominant-baseline="central" class="label">
+    <rect x="110" y="86" width="90" height="56" class="outside"/><rect x="200" y="86" width="90" height="56" class="outside"/><rect x="290" y="86" width="90" height="56" class="cover"/><rect x="380" y="86" width="90" height="56" class="cover"/><rect x="470" y="86" width="90" height="56" class="cover"/><rect x="560" y="86" width="90" height="56" class="cover"/><rect x="650" y="86" width="90" height="56" class="cover"/><rect x="740" y="86" width="90" height="56" class="outside"/>
+    <text x="155" y="114">a₀</text><text x="245" y="114">a₁</text><text x="335" y="114">a₂</text><text x="425" y="114">a₃</text><text x="515" y="114">a₄</text><text x="605" y="114">a₅</text><text x="695" y="114">a₆</text><text x="785" y="114">a₇</text>
+    <text x="155" y="165" class="small">0</text><text x="245" y="165" class="small">1</text><text x="335" y="165" class="small">2</text><text x="425" y="165" class="small">3</text><text x="515" y="165" class="small">4</text><text x="605" y="165" class="small">5</text><text x="695" y="165" class="small">6</text><text x="785" y="165" class="small">7</text>
+  </g>
+  <path d="M290 210 V230 H470 V210 M470 210 V230 H650 V210 M650 210 V230 H740 V210" fill="none" stroke="#286a4b" stroke-width="3"/>
+  <text x="380" y="267" text-anchor="middle" class="label">2..4</text><text x="560" y="267" text-anchor="middle" class="label">4..6</text><text x="695" y="267" text-anchor="middle" class="label">6..7</text>
+  <text x="36" y="308" class="small">分块互不重叠，顺序组合后恰好覆盖目标范围；树结构可用少量节点表示这些块。</text>
+</svg>

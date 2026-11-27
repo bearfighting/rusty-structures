@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="330" viewBox="0 0 1000 330" role="img" aria-labelledby="title desc">
+  <title id="title">普通 Trie、压缩 Trie 与持久化 Trie 的结构差异</title>
+  <desc id="desc">普通 Trie 对 car 和 cart 逐字符建节点并标记 car 为完整词；压缩 Trie 将 compression 与 compressor 的公共前缀压为一条边后分叉；持久化版本共享未修改的 dog 分支。</desc>
+  <defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#718096"/></marker><style>text{font-family:sans-serif}.title{font-size:18px;font-weight:700;fill:#243247}.node{fill:#e5f3eb;stroke:#40516a;stroke-width:2}.shared{fill:#e8effa;stroke:#40516a;stroke-width:2}.edge{stroke:#718096;stroke-width:2;fill:none}.label{font-size:15px;fill:#243247}.note{font-size:13px;fill:#526174}</style></defs>
+  <rect width="1000" height="330" rx="18" fill="#f7f8fa"/>
+  <path d="M333 20 V310 M666 20 V310" stroke="#d4dae2" stroke-width="1.5"/>
+  <text x="25" y="38" class="title">逐字符 Trie</text>
+  <circle class="node" cx="58" cy="118" r="17"/><circle class="node" cx="125" cy="118" r="17"/><circle class="node" cx="192" cy="118" r="17"/><circle class="node" cx="259" cy="118" r="17"/><circle class="node" cx="259" cy="202" r="17"/>
+  <path d="M75 118 H106 M142 118 H173 M209 118 H240 M259 135 V185" class="edge" marker-end="url(#arr)"/>
+  <g class="label" text-anchor="middle" dominant-baseline="central"><text x="58" y="118">root</text><text x="125" y="118">c</text><text x="192" y="118">a</text><text x="259" y="118">r*</text><text x="259" y="202">t*</text></g>
+  <text x="25" y="260" class="note">* 表示完整词。car 与 cart</text><text x="25" y="280" class="note">共享前缀，节点按字符展开。</text>
+  <text x="355" y="38" class="title">压缩 Trie</text>
+  <circle class="node" cx="385" cy="140" r="20"/><rect class="shared" x="420" y="118" width="120" height="44" rx="12"/><circle class="node" cx="570" cy="140" r="18"/><rect class="node" x="600" y="92" width="54" height="38" rx="9"/><rect class="node" x="600" y="150" width="54" height="38" rx="9"/>
+  <path d="M405 140 H420 M540 140 H552 M586 132 L600 111 M586 148 L600 169" class="edge" marker-end="url(#arr)"/>
+  <g class="label" text-anchor="middle" dominant-baseline="central"><text x="385" y="140">root</text><text x="480" y="140">compress</text><text x="570" y="140">fork</text><text x="627" y="111">ion</text><text x="627" y="169">or</text></g>
+  <text x="355" y="230" class="note">公共路径合成边标签；分叉时</text><text x="355" y="250" class="note">只保留必要的分支节点。</text>
+  <text x="688" y="38" class="title">持久化版本</text>
+  <circle class="node" cx="722" cy="116" r="20"/><circle class="node" cx="722" cy="215" r="20"/><circle class="shared" cx="905" cy="166" r="24"/><circle class="node" cx="810" cy="116" r="20"/><circle class="node" cx="810" cy="215" r="20"/>
+  <path d="M742 116 H790 M742 215 H790 M742 127 L884 157 M742 204 L884 175" class="edge" marker-end="url(#arr)"/>
+  <g class="label" text-anchor="middle" dominant-baseline="central"><text x="722" y="116">A</text><text x="722" y="215">B</text><text x="810" y="116">cat</text><text x="810" y="215">car</text><text x="905" y="166">dog</text></g>
+  <text x="688" y="260" class="note">两个版本共享未修改的 dog</text><text x="688" y="280" class="note">分支，更新路径创建新节点。</text>
+</svg>

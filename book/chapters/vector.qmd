@@ -169,13 +169,11 @@ assert_eq!(values.as_slice(), &[4, 8, 15, 16, 23]);
 
 ## 源码导读
 
-| 文件 | 负责的内容 | 阅读问题 |
-|---|---|---|
-| `src/linear/vector.rs` | 类型状态、公共方法和核心算法 | 哪些操作会改变 `len`？哪些会改变分配？ |
-| `src/linear/vector/storage.rs` | 原始分配、扩容和释放 | 扩容失败时旧状态为什么仍有效？ |
-| `src/linear/vector/iter.rs` | 借用与消费迭代 | 已产出的元素如何避免再次析构？ |
-| `src/linear/vector/traits.rs` | `Clone`、`Deref`、索引、集合构造等 trait | 哪些标准接口委托给切片？ |
-| `src/linear/vector/errors.rs` | fallible 操作的错误类型 | `try_push` 失败时如何取回传入值？ |
+- `src/linear/vector.rs`：类型状态、公共方法和核心算法。哪些操作会改变 `len`？哪些会改变分配？
+- `src/linear/vector/storage.rs`：原始分配、扩容和释放。扩容失败时旧状态为什么仍有效？
+- `src/linear/vector/iter.rs`：借用与消费迭代。已产出的元素如何避免再次析构？
+- `src/linear/vector/traits.rs`：`Clone`、`Deref`、索引、集合构造等 trait。哪些标准接口委托给切片？
+- `src/linear/vector/errors.rs`：fallible 操作的错误类型。`try_push` 失败时如何取回传入值？
 
 ## 与标准库 `Vec<T>` 的关系
 

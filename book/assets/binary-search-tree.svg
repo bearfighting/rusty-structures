@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="330" viewBox="0 0 850 330" role="img" aria-labelledby="title desc">
+  <title id="title">二叉搜索树的排序关系</title>
+  <desc id="desc">根节点 8，左子树为 3、1、6、4、7，右子树为 10、14、13。每个节点左侧值更小，右侧值更大，中序遍历为升序。</desc>
+  <defs><style>text{font-family:sans-serif}.node{fill:#e5f3eb;stroke:#40516a;stroke-width:2}.edge{stroke:#718096;stroke-width:2}.v{font-size:19px;font-weight:700;fill:#243247}.note{font-size:16px;fill:#526174}</style></defs>
+  <rect width="850" height="330" rx="18" fill="#f7f8fa"/>
+  <g class="edge"><path d="M425 70 L275 135 M425 70 L575 135 M275 155 L190 220 M275 155 L350 220 M350 240 L320 285 M350 240 L380 285 M575 155 L660 220 M660 240 L700 285"/></g>
+  <g><circle class="node" cx="425" cy="62" r="27"/><circle class="node" cx="275" cy="145" r="27"/><circle class="node" cx="575" cy="145" r="27"/><circle class="node" cx="190" cy="230" r="27"/><circle class="node" cx="350" cy="230" r="27"/><circle class="node" cx="660" cy="230" r="27"/><circle class="node" cx="320" cy="294" r="24"/><circle class="node" cx="380" cy="294" r="24"/><circle class="node" cx="700" cy="294" r="24"/></g>
+  <g text-anchor="middle" dominant-baseline="central" class="v"><text x="425" y="62">8</text><text x="275" y="145">3</text><text x="575" y="145">10</text><text x="190" y="230">1</text><text x="350" y="230">6</text><text x="660" y="230">14</text><text x="320" y="294">4</text><text x="380" y="294">7</text><text x="700" y="294">13</text></g>
+  <text x="24" y="36" class="note">根左侧更小</text><text x="694" y="36" class="note">根右侧更大</text>
+</svg>
